@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#f67129</color>
+    <color name="colorPrimaryDark">#f67c25</color>
+    <color name="colorAccent">#f7921f</color>
+    <color name="white">#ffffff</color>
+
+    <color name="red">#FF0000</color>
+    <color name ="red_light">#CD3333</color>
+    <color name="red_light_leave_object">#ffcaca</color>
+    <color name="blue">#168ef7</color>
+    <color name="blue_light_1">#7EACE5</color>
+    <color name="dark_ground">#894106</color>
+    <color name ="dashboard_threbutton_color">#db7d1f</color>
+    <color name ="blue_light">#949bd0</color>
+    <color name="blue_myreport">#2abbac</color>
+    <color name ="ornage_light">#e9b898</color>
+    <color name="trans">#00ffffff</color>
+    <color name="black">#000000</color>
+    <color name="green">#037d50</color>
+    <color name= "green_light">#8faf02</color>
+    <color name ="green_shade2">#819929</color>
+    <color name ="green_shade3">#6a8421</color>
+    <color name ="green_myreport">#3eba11</color>
+    <color name= "gray">#e2e2e2</color>
+    <color name ="lightyellow">#d3c902</color>
+    <color name ="green_yellow">#938702</color>
+    <color name="greydark">#dddddd</color>
+</resources>

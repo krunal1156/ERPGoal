@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_margin="10dp"
+            android:background="@drawable/four_corner_round_white_10"
+            android:weightSum="1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_weight=".4"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:text="Goal"
+                    android:textSize="20dp"
+                    android:textColor="@color/dark_ground"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginBottom="1dp"
+                    android:gravity="center"
+                    android:text="Reason"
+                    android:textSize="20dp"
+                    android:textColor="@color/dark_ground"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/dark_ground"/>
+            <LinearLayout
+                android:layout_weight=".4"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:text="Task"
+                    android:textSize="20dp"
+                    android:textColor="@color/dark_ground"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginBottom="1dp"
+                    android:gravity="center"
+                    android:text="TIme"
+                    android:textSize="20dp"
+                    android:textColor="@color/dark_ground"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/dark_ground"/>
+            <ImageView
+                android:src="@drawable/tasklist_bluetick"
+                android:layout_weight=".19"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+</LinearLayout>

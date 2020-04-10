@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:background="@drawable/splashscreen_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/main_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:background="@color/trans"
+        android:fillViewport="true">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+
+            <devs.mulham.horizontalcalendar.HorizontalCalendarView
+
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="gone"
+                app:selectedDateBackground="@drawable/four_corner_round_white_10"
+                app:selectorColor="@color/dark_ground"
+                app:textColorNormal="@color/black"
+                app:textColorSelected="@color/dashboard_threbutton_color" />
+
+
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:weightSum="3"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_margin="5dp"
+                    android:id="@+id/lnr_all_task"
+                    android:background="@drawable/four_corner_round_blue_10"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/txt_all"
+                        android:layout_margin="5dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="All"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:id="@+id/lnr_running_task"
+                    android:background="@drawable/four_corner_round_ornage_10"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/txt_running"
+                        android:layout_margin="5dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Running"
+                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:id="@+id/lnr_finished_task"
+                    android:background="@drawable/four_corner_round_green_10"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/txt_finished"
+                        android:layout_margin="5dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Finished"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:id="@+id/lnr_missed_task"
+                    android:background="@drawable/four_corner_round_red_10"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/txt_missed"
+                        android:layout_margin="5dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Missed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:visibility="gone"
+                android:id="@+id/rv_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
+                android:visibility="visible"
+                android:id="@+id/rv_vertical_tasklist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/txt_no_taskl_label"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="No Tasks Found !"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/bottomlayout"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="1dp"
+        android:layout_marginBottom="0dp"
+
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+
+        <!-- <com.view.calender.horizontal.umar.horizontalcalendarview.HorizontalCalendarView
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="50dp"
+            android:id="@+id/horizontalcalendarview"
+            android:layout_width="match_parent"
+            android:background="@drawable/splashscreen_background"
+            android:layout_height="match_parent">
+        </com.view.calender.horizontal.umar.horizontalcalendarview.HorizontalCalendarView>-->
+    </LinearLayout>
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/img_plus"
+        android:layout_width="71dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        app:srcCompat="@drawable/orrangeplus" />
+
+</RelativeLayout>

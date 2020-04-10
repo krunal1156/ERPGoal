@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Goal</string>
+    <string name="internal_storage">internalstorage</string>
+
+    <string name="noti_channel_default">default channel</string>
+    <string name="noti_channel_second">second channel</string>
+</resources>

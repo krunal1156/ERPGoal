@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listview_background_shape">
+    <stroke android:width="2dp"
+        android:color="@color/dashboard_threbutton_color" >
+
+
+
+    </stroke>
+
+    <padding android:left="0dp"
+        android:top="0dp"
+        android:right="0dp"
+        android:bottom="0dp" />
+    <corners
+        android:bottomLeftRadius="40dp"
+        android:bottomRightRadius="40dp"
+        android:topLeftRadius="40dp"
+        android:topRightRadius="40dp" />
+
+
+
+    <gradient
+        android:angle="180"
+        android:centerColor="#f67c25"
+        android:endColor="#f7921f"
+        android:startColor="#f67129"
+        android:type="linear" />
+
+</shape>

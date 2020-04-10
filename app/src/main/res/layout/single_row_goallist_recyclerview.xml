@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_margin="5dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_margin="5dp"
+        android:background="@drawable/four_corner_round_red_10"
+        android:id="@+id/view_background"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/bin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="delete"
+            android:textColor="#fff"
+            android:textSize="13dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_margin="5dp"
+        android:background="@drawable/four_corner_round_white_10"
+        android:id="@+id/view_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/lnr_top_container"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1.7"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:weightSum="1"
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_margin="3dp"
+                        android:id="@+id/txt_goalname"
+                        android:textStyle="bold"
+                        android:textColor="@color/dark_ground"
+                        android:gravity="left"
+                        android:textSize="15dp"
+                        android:text="Title"
+                        android:maxLines="3"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="3dp"
+                        android:id="@+id/txt_intop"
+                        android:textStyle="bold"
+                        android:textColor="@color/blue_light"
+                        android:gravity="left"
+                        android:textSize="15dp"
+                        android:text="In Top 13"
+                        android:maxLines="3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="left"
+                    android:weightSum="2"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_weight=".8"
+                        android:layout_width="0dp"
+                        android:weightSum="2"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/txt_goalcategory"
+                            android:textStyle="normal"
+                            android:textColor="@color/dark_ground"
+                            android:gravity="left|center_vertical"
+                            android:textSize="12dp"
+                            android:text="SperitualRelation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+                        <TextView
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/txt_goal_status"
+                            android:textStyle="bold"
+                            android:textColor="@color/dark_ground"
+                            android:gravity="center|center_vertical"
+                            android:textSize="12dp"
+                            android:text="Inactive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+                      <TextView
+                          android:layout_weight="1.2"
+                        android:layout_marginTop="3dp"
+                          android:layout_marginBottom="3dp"
+                          android:layout_marginRight="0dp"
+                        android:id="@+id/txt_goaldeadline"
+                        android:textStyle="normal"
+                        android:textColor="@color/dark_ground"
+                        android:gravity="right|center_vertical"
+                        android:textSize="12dp"
+                        android:text="start:02/02/2020 end:02/02/2020"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:tint="@color/white"
+                    android:background="@drawable/rightside_corner_round_green"
+                    android:gravity="center"
+                    android:layout_weight=".3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" >
+                    <ImageView
+                        android:tint="@color/white"
+                        android:background="@drawable/rightside_corner_round_green"
+                        android:id="@+id/txt_editgoal"
+                        android:gravity="center"
+                        android:src="@drawable/edit_icon"
+                        android:layout_weight=".3"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

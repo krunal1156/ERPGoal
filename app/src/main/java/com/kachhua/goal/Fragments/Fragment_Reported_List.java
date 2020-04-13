@@ -206,10 +206,10 @@ public class Fragment_Reported_List extends Fragment {
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         currentdate = df.format(c);
-        welcometext.setText("Missed Tasks!");
+        welcometext.setText("Reported Tasks!");
 
 
-        rv_tasklist=dbhelper.get_daily_tasklist_runnig();
+        rv_tasklist=dbhelper.get_daily_tasklist_runnig(currentdate);
         filtered_rv_tasklist=rv_tasklist;
         if(filtered_rv_tasklist!=null && filtered_rv_tasklist.size()>0){
             adapter = new RV_Adapter_TaskList(filtered_rv_tasklist);
@@ -222,7 +222,7 @@ public class Fragment_Reported_List extends Fragment {
         }else {
             recyclerView.setVisibility(View.GONE);
             txt_no_task_label.setVisibility(View.VISIBLE);
-            Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
 
         }
 

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.kachhua.goal.R;
 import com.kachhua.goal.database.ConstantValues;
 import com.kachhua.goal.database.DataBaseHelper;
+import com.kachhua.goal.model.Model_GoalList;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,9 +48,11 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
     ArrayList<String> status_type_list = new ArrayList<>();
     ArrayList<String> weekday_list=new ArrayList<>();
 
-    String status_type,start_deadline,end_Deadline,frequency,frequency_value,goalid;
+    String title,status_type,start_deadline,end_Deadline,frequency,frequency_value,goalid;
     DataBaseHelper dbhelper;
     int max_day,min_day,max_month,min_month,max_year,min_year;
+    ArrayList<Model_GoalList.TaskDetail> daily_tasklist_from_db = new ArrayList<>();
+    String DayName,currentdate;
 
 
     @Override
@@ -68,6 +71,16 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
         max_year=Integer.parseInt(maxdate[2]);
         max_month=Integer.parseInt(maxdate[1]);
         max_day=Integer.parseInt(maxdate[0]);
+
+
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat df2 = new SimpleDateFormat("dd MMM");
+
+        SimpleDateFormat dateformate = new SimpleDateFormat("EEEE");
+        DayName = dateformate.format(c);
+        currentdate = df.format(c);
 
 
 
@@ -515,7 +528,7 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
 
     void Create_Taask(){
 
-        String title = edt_title.getText().toString();
+         title = edt_title.getText().toString();
         String reason =edt_reason.getText().toString();
 
         if(TextUtils.isEmpty(title)){
@@ -540,8 +553,20 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
 
 
             status_type =ConstantValues.Status_Active;
-            dbhelper.insert_task_id_db(goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated);
-            finish();
+           dbhelper.insert_task_id_db(goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated);
+
+
+         ArrayList<Model_GoalList.TaskDetail>   filtered_rv_tasklist=dbhelper.get_tasklist(goalid);
+         String taskid="";
+            for (int i=0;i<filtered_rv_tasklist.size();i++){
+
+                taskid=filtered_rv_tasklist.get(i).getId();
+
+            }
+
+
+            insertdata_daily_once(taskid);
+
         }
 
     }
@@ -597,24 +622,141 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-                        txt_start_time.setText(hourOfDay + ":" + minute);
+
+                        int    starthour = hourOfDay;
+                        int   startminute=minute;
+                        String minutevalue ="";
+                        if(startminute==0)
+                            minutevalue="00";
+                        else
+                            minutevalue=String.valueOf(startminute);
+
+                        String AM_PM ;
+                        if(hourOfDay < 12) {
+                            AM_PM = "AM";
+                        } else {
+                            AM_PM = "PM";
+                            hourOfDay=hourOfDay-12;
+                        }
+                        if(hourOfDay==0)
+                            hourOfDay=12;
+
+                        String starttime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+
+                        txt_start_time.setText(starttime);
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
     }
     public void endtime_dialog(){
         final Calendar c = Calendar.getInstance();
-       int   mHour = c.get(Calendar.HOUR_OF_DAY);
-       int  mMinute = c.get(Calendar.MINUTE);
+        int   mHour = c.get(Calendar.HOUR_OF_DAY);
+        int  mMinute = c.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-                        txt_end_time.setText(hourOfDay + ":" + minute);
+
+                        int    starthour = hourOfDay;
+                        int   startminute=minute;
+                        String minutevalue ="";
+                        if(startminute==0)
+                            minutevalue="00";
+                        else
+                            minutevalue=String.valueOf(startminute);
+
+                        String AM_PM ;
+                        if(hourOfDay < 12) {
+                            AM_PM = "AM";
+                        } else {
+                            AM_PM = "PM";
+                            hourOfDay=hourOfDay-12;
+                        }
+                        if(hourOfDay==0)
+                            hourOfDay=12;
+
+                        String endtime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+
+
+                        txt_end_time.setText(endtime);
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
     }
+
+    void insertdata_daily_once(String taskid){
+
+        try {
+
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date Date_Current = df.parse(currentdate);
+
+
+
+
+                     Date Date_start =df.parse(start_deadline);
+                    Date Date_end = df.parse(end_Deadline);
+
+                    if (frequency.equals(ConstantValues.Frequency_Daily)) {
+
+
+                        if(is_in_betweendate(Date_Current,Date_start,Date_end))
+                            dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+
+                    else if (frequency.equals(ConstantValues.Frequency_Weekly)) {
+                        if(is_in_betweendate(Date_Current,Date_start,Date_end))
+                            if (DayName.equals(frequency_value))
+                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+
+                    else if (frequency.equals(ConstantValues.Frequency_Monthly)) {
+
+                        if(is_in_betweendate(Date_Current,Date_start,Date_end)){
+                            String []currentdate_array=currentdate.split("/");
+                            String date1 =currentdate_array[0];
+
+                            String frequncy_value_array[]=frequency_value.split("/");
+                            String date2 =frequncy_value_array[0];
+                            if (date1.equals(date2))
+                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+
+
+                        }
+
+
+
+
+
+                    else if (frequency.equals(ConstantValues.Frequency_OneTime)) {
+                        if(is_in_betweendate(Date_Current,Date_start,Date_end))
+                            if (currentdate.equals(frequency_value))
+                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+
+
+
+
+
+
+
+            finish();
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
+    }
+
+    boolean is_in_betweendate(Date CurrntDate,Date Startdate,Date Enddate){
+
+        return Startdate.compareTo(CurrntDate) * CurrntDate.compareTo(Enddate)>=0;
+    }
+
 }

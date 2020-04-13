@@ -2,12 +2,25 @@ package com.kachhua.goal.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
+import android.widget.Toast;
 
+import com.kachhua.goal.Activity.Activity_Main;
 import com.kachhua.goal.model.Model_GoalList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,7 +29,7 @@ import java.util.Date;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "ERP_GOAL";
+    public static final String DATABASE_NAME = ConstantValues.DB_Name;
     private static final int DATABASE_VERSION =9 ;
 
 
@@ -58,7 +71,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.insert(ConstantValues.GoalList_Table, null, values);
         db.close();
     }
-
     public void update_goallist(String goalid, String goalname,String category,String status,String startdate,String deadline,String intop3,String intop10) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -71,22 +83,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(ConstantValues.InTop10, intop10);
         db.update(ConstantValues.GoalList_Table, values,  " ID = ?", new String[]{goalid});
         db.close();
-    }
-/*
-    public boolean check_taskcode_tasklist_tbl(String taskid) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + ConstantValues.TASK_ID + " From " + ConstantValues.TaskList_Table + " WHERE " + ConstantValues.TASK_ID + "= '" + taskid + "'";
-        Cursor cursor = db.rawQuery(query, null);
-        int count = cursor.getCount();
-        cursor.close();
 
-        if (count == 0) {
-            return false;
-        } else {
-            return true;
+        if(status==ConstantValues.Status_InActive){
+            SQLiteDatabase db1 = this.getWritableDatabase();
+            ContentValues values1 = new ContentValues();
+            values1.put(ConstantValues.TaskStatus, ConstantValues.Status_InActive);
+            db1.update(ConstantValues.Tasklist_Table, values1,  ConstantValues.GoalId+" = ?", new String[]{goalid});
+            db1.close();
+
         }
 
-    }*/
+
+
+    }
+
 
     public void delete_goal(String goal_id){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -171,7 +181,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.insert(ConstantValues.Tasklist_Table, null, values);
         db.close();
     }
-
     public void update_task_id_db(String id,String goalid, String taskname, String task_frequency,String frequency_value ,String task_status, String start_deadline, String end_deadline, String reason,String createddte,String active,String complate) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -188,6 +197,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(ConstantValues.Task_Active_InActive,active);
         db.update(ConstantValues.Tasklist_Table, values,  " ID = ?", new String[]{id});
         db.close();
+
+
+        if(task_status==ConstantValues.Status_InActive){
+            SQLiteDatabase db1 = this.getWritableDatabase();
+            ContentValues values1 = new ContentValues();
+            values1.put(ConstantValues.TaskStatus, ConstantValues.Status_InActive);
+            db1.update(ConstantValues.Daily_Tasklist_Table, values1,  ConstantValues.TaskId+" = ?", new String[]{id});
+            db1.close();
+
+        }else{
+            SQLiteDatabase db1 = this.getWritableDatabase();
+            ContentValues values1 = new ContentValues();
+            values1.put(ConstantValues.TaskStatus, ConstantValues.Status_Active);
+            db1.update(ConstantValues.Daily_Tasklist_Table, values1,  ConstantValues.TaskId+" = ?", new String[]{id});
+            db1.close();
+        }
+
+
     }
 
 
@@ -197,6 +224,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String query = "select * from " + ConstantValues.Tasklist_Table+ " WHERE " + ConstantValues.GoalId + "= '" + goalid + "'"; ;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor_one = db.rawQuery(query, null);
+
         String show_goalname="";
         if (cursor_one.moveToFirst()) {
             do {
@@ -432,7 +460,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db1.update(ConstantValues.Tasklist_Table, values1,  " ID = ?", new String[]{original_taskid});
         db1.close();
     }
-
     public void update_reason_daily_task_id_db(String taskid,String reason) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -442,10 +469,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.update(ConstantValues.Daily_Tasklist_Table, values,  " ID = ?", new String[]{taskid});
         db.close();
     }
+    public void update_status_daily_task_id_db(String taskid){
+        SQLiteDatabase db1 = this.getWritableDatabase();
+        ContentValues values1 = new ContentValues();
+        values1.put(ConstantValues.TaskStatus, ConstantValues.Status_InActive);
+        db1.update(ConstantValues.Daily_Tasklist_Table, values1,  ConstantValues.TaskId+" = ?", new String[]{taskid});
+        db1.close();
 
-    public ArrayList<Model_GoalList.TaskDetail> get_daily_tasklist_runnig() {
+    }
+
+    public ArrayList<Model_GoalList.TaskDetail> get_daily_tasklist_runnig(String currentdate) {
+
+
         ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
-        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated + "'"; ;
+        //String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated + "AND " + ConstantValues.TaskStatus + "= '" + ConstantValues.Status_Active  +"'"; ;
+        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table + " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated +"'"  +" AND " +ConstantValues.TaskStatus+ " = '" + ConstantValues.Status_Active + "'" ;
+
         SQLiteDatabase db_one = this.getWritableDatabase();
         Cursor cursor_one = db_one.rawQuery(query_one, null);
 
@@ -499,20 +538,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-
                         } while (cursor.moveToNext());
                     }
 
 
 
 
-                    //if(Date_corrent.after(Date_start) && Date_corrent.before(Date_end))
-                    //  if(is_in_betweendate(Date_corrent,Date_start,Date_end))
-                    modelList.add(model);
+                    String currrent_date_from_db =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date));
+
+                    if(currrent_date_from_db.equals(currentdate))
+                        modelList.add(model);
+
+
+                  //  modelList.add(model);
 
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Toast.makeText(context,e.getMessage().toString(),Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -709,10 +752,44 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return modelList;
     }
+    public ArrayList<Model_GoalList.TaskDetail> get_daily_tasklist_by_taskid(String taskid) {
 
 
+        ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
+        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskId + "= '" + taskid + "'"; ;
+        SQLiteDatabase db_one = this.getWritableDatabase();
+        Cursor cursor_one = db_one.rawQuery(query_one, null);
+
+        String show_goalname="";
+        if (cursor_one.moveToFirst()) {
+            do {
+                ///////alwasy start from 0 culumn index 0 means first column////////////
+
+
+                try {
+                    Model_GoalList.TaskDetail model = new Model_GoalList.TaskDetail();
+                    model.setId(cursor_one.getString(cursor_one.getColumnIndex("ID")));
+                       modelList.add(model);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context,e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                }
+
+
+
+
+            } while (cursor_one.moveToNext());
+        }
+        return modelList;
+    }
     boolean is_in_betweendate(Date CurrntDate,Date Startdate,Date Enddate){
 
         return Startdate.compareTo(CurrntDate) * CurrntDate.compareTo(Enddate)>=0;
     }
+
+
+
+
 }

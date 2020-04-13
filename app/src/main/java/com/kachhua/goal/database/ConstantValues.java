@@ -2,12 +2,14 @@ package com.kachhua.goal.database;
 
 public class ConstantValues {
 
+    public static final String DB_Name ="ERP_GOAL";
+    public static final String foldername ="erp_goal";
     public static final String Status_running ="Running";
     public static final String Status_not_started ="Not Started";
     public static final String Status_finished ="Finished";
     public static final String Status_Missed="Missed";
     public static final String Status_Active="Active";
-    public static final String Status_InActive="InActive";
+    public static final String Status_InActive="Inactive";
     public static final String Status_Reported="Reported";
 
     public static final String Complated="Complated";

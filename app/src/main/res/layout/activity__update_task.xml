@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.4"
                 android:gravity="center"
-                android:text="Select Frequncy"
+                android:text="Select Frequency"
                 android:textColor="@color/dark_ground"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -155,7 +155,7 @@
                     android:textColor="@color/dark_ground"
                     android:gravity="center"
                     android:textSize="15sp"
-                    android:text="select date"
+                    android:text="Select Date"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
                 <ImageView
@@ -199,7 +199,95 @@
                     android:textColor="@color/dark_ground"
                     android:gravity="center"
                     android:textSize="15sp"
-                    android:text="select date"
+                    android:text="Select Date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <ImageView
+
+                    android:layout_margin="5dp"
+                    android:tint="@color/dark_ground"
+                    android:src="@drawable/downarrow"
+                    android:layout_width="15dp"
+
+                    android:layout_height="15dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".6"
+                android:gravity="right"
+                android:text="Start time :"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:background="@drawable/four_corner_round_white_10"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:gravity="right|center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4">
+
+                <TextView
+                    android:id="@+id/txt_start_time"
+                    android:textColor="@color/dark_ground"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:text="Select Start time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <ImageView
+
+                    android:layout_margin="5dp"
+                    android:tint="@color/dark_ground"
+                    android:src="@drawable/downarrow"
+                    android:layout_width="15dp"
+
+                    android:layout_height="15dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".6"
+                android:gravity="right"
+                android:text="End time :"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:background="@drawable/four_corner_round_white_10"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:gravity="right|center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4">
+
+                <TextView
+                    android:id="@+id/txt_end_time"
+                    android:textColor="@color/dark_ground"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:text="Select End time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
                 <ImageView

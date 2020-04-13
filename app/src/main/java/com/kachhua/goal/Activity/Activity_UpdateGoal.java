@@ -43,6 +43,9 @@ public class Activity_UpdateGoal extends AppCompatActivity  implements View.OnCl
     DataBaseHelper dbhelper;
     Model_GoalList goaldetail;
 
+    ArrayList<Model_GoalList.TaskDetail>tasklist_by_goalid=new ArrayList<>();
+    ArrayList<Model_GoalList.TaskDetail>daily_tasklist_by_taskid = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -303,7 +306,7 @@ public class Activity_UpdateGoal extends AppCompatActivity  implements View.OnCl
 
 
             case R.id.button1:
-                Create_Task();
+                Update_Task();
                 break;
 
             case R.id.lnr_intop3:
@@ -326,7 +329,7 @@ public class Activity_UpdateGoal extends AppCompatActivity  implements View.OnCl
         }
     }
 
-    void Create_Task(){
+    void Update_Task(){
 
         String taskname =edt_title.getText().toString();
 
@@ -346,6 +349,15 @@ public class Activity_UpdateGoal extends AppCompatActivity  implements View.OnCl
 
         }else{
             dbhelper.update_goallist(goaldetail.id,taskname,category_type,status_type,start_deadline,end_deadline,is_top3,is_top10);
+
+
+            if(status_type.equals(ConstantValues.Status_InActive))
+            tasklist_by_goalid =dbhelper.get_tasklist(goaldetail.id);
+            for(int i=0;i<tasklist_by_goalid.size();i++){
+                String taskid = tasklist_by_goalid.get(i).getId();
+                  dbhelper.update_status_daily_task_id_db(taskid);
+            }
+
             finish();
         }
 

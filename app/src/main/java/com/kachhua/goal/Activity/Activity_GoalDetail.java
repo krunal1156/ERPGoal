@@ -132,7 +132,7 @@ public class Activity_GoalDetail extends AppCompatActivity  implements TaskList_
             viewHolder.txt_taskname.setText(filtered_rv_tasklist.get(i).getTaskname());
             viewHolder.txt_status.setText(filtered_rv_tasklist.get(i).getTaskstatus());
             viewHolder.txt_deadline.setText("start : "+filtered_rv_tasklist.get(i).getStart_deadline());
-            viewHolder.txt_deadline2.setText("end : "+filtered_rv_tasklist.get(i).getStart_deadline()+"  ");
+            viewHolder.txt_deadline2.setText("end  : "+filtered_rv_tasklist.get(i).getStart_deadline()+"  ");
 
 
            if(filtered_rv_tasklist.get(i).getTaskstatus().equals(ConstantValues.Status_InActive)){

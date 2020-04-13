@@ -54,7 +54,6 @@ public class Fragment_Dashboard extends Fragment {
 
     DataBaseHelper dbhelper;
     RecyclerView rv_horizonal,rv_vertical_tasklist;
-    RV_Adapter_GoalList adapter;
     RV_Adapter_TaskList adapter_tasklist;
     int selected_index_horizontal_rv =0;
     String goal_id,goal_startdate,goal_enddate;
@@ -129,7 +128,7 @@ public class Fragment_Dashboard extends Fragment {
                 txt_missed.setTextColor(getResources().getColor(R.color.black));
 
                 daily_tasklist_from_db.clear();;
-                daily_tasklist_from_db=dbhelper.get_daily_tasklist_runnig();
+                daily_tasklist_from_db=dbhelper.get_daily_tasklist_runnig(currentdate);
                 if(daily_tasklist_from_db!=null && daily_tasklist_from_db.size()>0){
                     adapter_tasklist = new RV_Adapter_TaskList(daily_tasklist_from_db,ConstantValues.Incomplated);
                     rv_vertical_tasklist.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -140,7 +139,8 @@ public class Fragment_Dashboard extends Fragment {
                 }else {
                     rv_vertical_tasklist.setVisibility(View.GONE);
                     txt_no_task_label.setVisibility(View.VISIBLE);
-                    Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
+                    txt_no_task_label.setText("No Daily Task Found !");
+                   // Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -170,7 +170,8 @@ public class Fragment_Dashboard extends Fragment {
                 }else {
                     rv_vertical_tasklist.setVisibility(View.GONE);
                     txt_no_task_label.setVisibility(View.VISIBLE);
-                    Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
+                    txt_no_task_label.setText("No Finished Task Found !");
+                  //  Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -200,7 +201,8 @@ public class Fragment_Dashboard extends Fragment {
                 }else {
                     rv_vertical_tasklist.setVisibility(View.GONE);
                     txt_no_task_label.setVisibility(View.VISIBLE);
-                    Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
+                    txt_no_task_label.setText("No Missed Task Found !");
+                  //  Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -256,7 +258,7 @@ public class Fragment_Dashboard extends Fragment {
 
     }
 
-    public class RV_Adapter_GoalList extends RecyclerView.Adapter<ViewHolder_GoalList>  {
+   /* public class RV_Adapter_GoalList extends RecyclerView.Adapter<ViewHolder_GoalList>  {
 
 
 
@@ -298,9 +300,9 @@ public class Fragment_Dashboard extends Fragment {
             viewHolder.lnr_main_container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent myint = new Intent(getContext(),Activity_UpdateGoal.class);
+                    *//*Intent myint = new Intent(getContext(),Activity_UpdateGoal.class);
                     myint.putExtra("goal_detail",filtered_rv_goallist.get(i));
-                    startActivity(myint);*/
+                    startActivity(myint);*//*
                     selected_index_horizontal_rv=i;
                     goal_id =filtered_rv_goallist.get(i).getId();
                     goal_startdate=filtered_rv_goallist.get(i).getStart_Deadline();
@@ -351,7 +353,7 @@ public class Fragment_Dashboard extends Fragment {
         }
 
     }
-
+*/
 
     public class RV_Adapter_TaskList extends RecyclerView.Adapter<ViewHolder_TaskList>  {
 
@@ -471,7 +473,7 @@ public class Fragment_Dashboard extends Fragment {
 
                                 dbhelper.update_daily_task_id_db(currentdate,adapterlist.get(i).getId(),adapterlist.get(i).getTaskid());
                                 daily_tasklist_from_db.clear();;
-                                daily_tasklist_from_db = dbhelper.get_daily_tasklist_runnig();
+                                daily_tasklist_from_db = dbhelper.get_daily_tasklist_runnig(currentdate);
                                 if (daily_tasklist_from_db != null && daily_tasklist_from_db.size() > 0) {
                                     adapter_tasklist = new RV_Adapter_TaskList(daily_tasklist_from_db, ConstantValues.Incomplated);
                                     rv_vertical_tasklist.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -546,9 +548,13 @@ public class Fragment_Dashboard extends Fragment {
         System.out.println("Current time => " + c);
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat df2 = new SimpleDateFormat("dd MMM");
+
         SimpleDateFormat dateformate = new SimpleDateFormat("EEEE");
         DayName = dateformate.format(c);
         currentdate = df.format(c);
+
+        String currentdatename = df2.format(c);
 
 
 
@@ -556,7 +562,7 @@ public class Fragment_Dashboard extends Fragment {
         int lastTimeStarted = settings.getInt("last_time_started", -1);
         Calendar calendar = Calendar.getInstance();
         int today = calendar.get(Calendar.DAY_OF_YEAR);
-        welcometext.setText("My Today's Tasks");
+        welcometext.setText("My Today's Tasks - "+currentdatename);
 
 
         if (today != lastTimeStarted) {
@@ -575,23 +581,6 @@ public class Fragment_Dashboard extends Fragment {
 
 
 
-       /* Date c = Calendar.getInstance().getTime();
-        System.out.println("Current time => " + c);
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        String currentcalender = df.format(c);
-
-        String storeddate =PrefUtils.get_stored_Date(getContext());
-        if(storeddate!=null) {
-            if (!storeddate.equals(currentcalender)) {
-                add_dailytask_inlist = true;
-            } else {
-                add_dailytask_inlist = true;
-            }
-        }
-        else {
-            add_dailytask_inlist = true;
-
-        }*/
 
     }
 
@@ -668,9 +657,7 @@ public class Fragment_Dashboard extends Fragment {
 
 
             }
-            else{
-                Toast.makeText(getContext(),"No TaskList Found In This Goal",Toast.LENGTH_SHORT).show();
-            }
+
         } catch (ParseException e) {
             e.printStackTrace();
             Toast.makeText(getContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
@@ -687,7 +674,7 @@ public class Fragment_Dashboard extends Fragment {
 
 
         daily_tasklist_from_db.clear();;
-            daily_tasklist_from_db=dbhelper.get_daily_tasklist_runnig();
+            daily_tasklist_from_db=dbhelper.get_daily_tasklist_runnig(currentdate);
 
             if(daily_tasklist_from_db!=null && daily_tasklist_from_db.size()>0){
                 adapter_tasklist = new RV_Adapter_TaskList(daily_tasklist_from_db,ConstantValues.Incomplated);
@@ -701,7 +688,8 @@ public class Fragment_Dashboard extends Fragment {
 
                 rv_vertical_tasklist.setVisibility(View.GONE);
                 txt_no_task_label.setVisibility(View.VISIBLE);
-                insertdata_daily_once();
+                txt_no_task_label.setText("No Daily Task Found !");
+              //  insertdata_daily_once();
             }
 
 

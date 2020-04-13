@@ -245,17 +245,19 @@
 
             <LinearLayout
 
+                android:layout_margin="5dp"
                 android:visibility="visible"
                 android:id="@+id/lnr_intop3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="20dp"
+
                 android:background="@drawable/four_corner_round_white_10"
                 android:orientation="vertical"
                >
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -273,25 +275,26 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:gravity="center"
-                    android:text="Top 3"
+                    android:text=" In Top 3"
                     android:textColor="@color/dark_ground"
-                    android:textSize="37sp"
+                    android:textSize="20dp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
 
+                android:layout_margin="5dp"
                 android:visibility="visible"
                 android:id="@+id/lnr_intop10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="20dp"
                 android:background="@drawable/four_corner_round_white_10"
                 android:orientation="vertical"
                 >
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -309,9 +312,9 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:gravity="center"
-                    android:text="Top 10"
+                    android:text=" In Top 10"
                     android:textColor="@color/dark_ground"
-                    android:textSize="37sp"
+                    android:textSize="20dp"
                     android:textStyle="bold" />
             </LinearLayout>
 

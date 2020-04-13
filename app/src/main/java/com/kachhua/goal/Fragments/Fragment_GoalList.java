@@ -369,7 +369,7 @@ public class Fragment_GoalList extends Fragment  implements GoalList_RecyclerIte
         }else{
             txt_no_task_label.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
-            Toast.makeText(getContext(),"No goalList Found !",Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getContext(),"No goalList Found !",Toast.LENGTH_SHORT).show();
         }
 
     }

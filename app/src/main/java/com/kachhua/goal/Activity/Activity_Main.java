@@ -1,5 +1,9 @@
 package com.kachhua.goal.Activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -7,10 +11,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kachhua.goal.Fragments.Fragment_Dashboard;
 import com.kachhua.goal.Fragments.Fragment_ForceReport;
@@ -18,6 +24,15 @@ import com.kachhua.goal.Fragments.Fragment_GoalList;
 import com.kachhua.goal.Fragments.Fragment_Reported_List;
 import com.kachhua.goal.R;
 import com.kachhua.goal.database.ConstantValues;
+import com.kachhua.goal.database.DataBaseHelper;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Calendar;
 
 public class Activity_Main extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,7 +43,8 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
     TextView txt_dashboard,txt_my_goals,txt_top3_goals,txt_top10_goals;
     TextView txt_business_goal,txt_office_goals, txt_relationship_goals,txt_general_goals, txt_financial_goals,txt_spiritual_goal,txt_lifestyle_goal,txt_mental_goal,txt_family_goal,txt_physical_goal,txt_reporeted_list;
     LinearLayout lnr_force_report;
-
+    DataBaseHelper dataBaseHelper;
+    SharedPreferences settings1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +52,26 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         findids();
         actions();
         changefragment(0);
+
+         settings1 = PreferenceManager.getDefaultSharedPreferences(Activity_Main.this);
+        int abc = settings1.getInt("db_installed", -1);
+        if (abc!=1) {
+
+
+            SharedPreferences.Editor editor1 = settings1.edit();
+            editor1.putInt("db_installed", 1);
+            editor1.commit();
+
+
+            Import_Db();
+
+
+
+        }else{
+           // Import_Db();
+
+            export_Db();
+        }
     }
 
     void findids(){
@@ -222,6 +258,133 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         ft.replace(R.id.content_frame, fragment);
         ft.addToBackStack(null);
         ft.commit();
+
+
+
+
+
+
     }
+
+
+    public void Import_Db() {
+
+        try {
+            String inputString = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+            File file_input=new File(inputString);
+
+            InputStream myInput = null;
+            OutputStream outStream;
+
+            myInput = new FileInputStream(file_input);
+
+
+            String DB_PATH,dumypath;
+            String DB_NAME=ConstantValues.DB_Name;
+
+            if (android.os.Build.VERSION.SDK_INT >= 17) {
+               // DB_PATH = getApplicationContext().getApplicationInfo().dataDir + "/databases/";
+                DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
+                dumypath="/data/data/com.kachhua.goal/databases/ERP_GOAL";
+
+
+            }
+            else {
+                DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
+            }
+
+
+
+            String file = DB_PATH + DB_NAME;
+            outStream = new FileOutputStream(file);
+
+            File dbshm = new File(file + "-shm");
+            File dbwal = new File(file + "-wal");
+            if (dbshm.exists()) {
+                dbshm.delete();
+            }
+            if (dbwal.exists()) {
+                dbwal.delete();
+            }
+
+            byte[] buffer = new byte[1024];
+            int length = 0;
+          /*  while ((length = myInput.read(buffer)) >= 0) {
+                outStream.write(buffer, 0, length);
+            }*/
+
+            while ((length = myInput.read(buffer)) > 0) {
+                outStream.write(buffer, 0, length);
+            }
+
+            outStream.flush();
+            myInput.close();
+            outStream.close();
+
+
+
+             finish();
+             Intent myint = new Intent(Activity_Main.this,Activity_Main.class);
+             startActivity(myint);
+            Toast.makeText(getApplicationContext(),"Db Imported",Toast.LENGTH_SHORT).show();
+
+
+
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    void export_Db(){
+        try {
+
+
+
+            String dir_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+            File sltl_Db_file = new File(dir_path);
+            if(sltl_Db_file.exists())
+                sltl_Db_file.delete();
+
+
+
+            // Open your local db as the input stream
+            InputStream myInput =null;//= getApplicationContext().getAssets().open(DataBaseHelper.DATABASE_NAME+".db");
+
+            // Path to the just created empty db
+            String outFileName = "/data/data/com.kachhua.goal/databases/"+ConstantValues.DB_Name;
+
+            File file = new File(outFileName);
+            myInput = new FileInputStream(file);
+
+            String filename = Environment.getExternalStorageDirectory()+"/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+            OutputStream myOutput = new FileOutputStream(filename);
+
+            // transfer bytes from the inputfile to the outputfile
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = myInput.read(buffer)) > 0)
+            {
+                myOutput.write(buffer, 0, length);
+            }
+
+
+            myOutput.flush();
+            myOutput.close();
+            myInput.close();
+
+            Toast.makeText(getApplicationContext(),"Db Exported",Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
+        {
+            Log.e("error", e.toString());
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
 }

@@ -179,7 +179,7 @@ public class Fragment_ForceReport extends Fragment {
         }else {
             recyclerView.setVisibility(View.GONE);
             txt_no_task_label.setVisibility(View.VISIBLE);
-            Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getContext(),"No  Daily TaskList Found For Today",Toast.LENGTH_SHORT).show();
 
         }
 

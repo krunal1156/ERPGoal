@@ -2,6 +2,7 @@ package com.kachhua.goal.Activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.kachhua.goal.R;
@@ -33,7 +35,7 @@ import java.util.Date;
 public class Activity_UpdateTask extends AppCompatActivity implements View.OnClickListener {
 
     EditText edt_title,edt_reason;
-    TextView txt_startdeadline,txt_enddeadline,txt_status, txt_frequency;
+    TextView txt_startdeadline,txt_enddeadline,txt_status, txt_frequency,txt_start_time,txt_end_time;
     ImageView btn_back;
     LinearLayout btn_create;
     Calendar myCalendar;
@@ -100,6 +102,8 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
         txt_status=findViewById(R.id.txt_status);
         btn_create=findViewById(R.id.button1);
         edt_reason=findViewById(R.id.edt_reason);
+        txt_start_time=findViewById(R.id.txt_start_time);
+        txt_end_time=findViewById(R.id.txt_end_time);
 
 
         btn_back.setOnClickListener(this);
@@ -108,6 +112,9 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
         txt_frequency.setOnClickListener(this);
         txt_status.setOnClickListener(this);
         btn_create.setOnClickListener(this);
+        txt_start_time.setOnClickListener(this);
+        txt_end_time.setOnClickListener(this);
+
     }
     void setdata(){
         //status_type,start_deadline,end_Deadline,frequency,frequency_value
@@ -195,41 +202,7 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
         }
 
     }
-    void action_daily(){
 
-        try {
-
-            Calendar myCalendar= Calendar.getInstance();
-
-            Calendar calendar_max = Calendar.getInstance();
-            Calendar calendar_min = Calendar.getInstance();
-            calendar_max.set(2020,myCalendar.get(Calendar.MONTH),30);
-            calendar_min.set(2020,myCalendar.get(Calendar.MONTH),1);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(Activity_UpdateTask.this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    String daynum="";
-                    if(dayOfMonth<10)
-                        daynum="0"+String.valueOf(dayOfMonth);
-                    else
-                        daynum=String.valueOf(dayOfMonth);
-                    frequency_value = String.valueOf(daynum)+"/"+String.valueOf(month+1)+"/"+String.valueOf(year);
-                    // String  to_date =String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth);
-                    // txt_enddeadline.setText(end_Deadline);
-                    Toast.makeText(getApplicationContext(),frequency+"\n"+frequency_value,Toast.LENGTH_SHORT).show();
-
-                }
-            }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-            datePickerDialog.getDatePicker().setMinDate(calendar_min.getTimeInMillis());
-            datePickerDialog.getDatePicker().setMaxDate(calendar_max.getTimeInMillis());
-            datePickerDialog.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
     void action_onetime(){
 
         try {
@@ -245,11 +218,11 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                     String daynum="";
+
                     if(dayOfMonth<10)
                         daynum="0"+String.valueOf(dayOfMonth);
                     else
                         daynum=String.valueOf(dayOfMonth);
-
 
                     String monthnum="";
                     if(month<10)
@@ -257,7 +230,11 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                     else
                         monthnum=String.valueOf(month+1);
 
+
                     frequency_value = String.valueOf(daynum)+"/"+String.valueOf(monthnum)+"/"+String.valueOf(year);
+                    txt_frequency.setText("at "+frequency_value);
+
+                    //txt_frequency_value.setText(" - "+frequency_value);
                     // String  to_date =String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth);
                     // txt_enddeadline.setText(end_Deadline);
                     //Toast.makeText(getApplicationContext(),frequency+"\n"+frequency_value,Toast.LENGTH_SHORT).show();
@@ -293,6 +270,8 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                     else
                         daynum=String.valueOf(dayOfMonth);
                     frequency_value = String.valueOf(daynum)+"/"+String.valueOf(month+1)+"/"+String.valueOf(year);
+                    txt_frequency.setText("  every "+daynum+" Of Month");
+
                     // String  to_date =String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(dayOfMonth);
                     // txt_enddeadline.setText(end_Deadline);
                     Toast.makeText(getApplicationContext(),frequency+"\n"+frequency_value,Toast.LENGTH_SHORT).show();
@@ -337,6 +316,8 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                 @Override
                 public void onClick(View v) {
                     frequency_value = weekday_list.get(finalI);
+                    txt_frequency.setText(" Every "+frequency_value);
+
                     dialogbox_weekly.dismiss();
 
 
@@ -387,12 +368,15 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                 @Override
                 public void onClick(View v) {
                     frequency = frequency_type_list.get(finalI);
-                    txt_frequency.setText(frequency);
+                    //  txt_frequency.setText(frequency);
                     dialogbox_type.dismiss();
                     if(frequency.equals(ConstantValues.Frequency_Daily)){
-                        action_daily();
+                        // action_daily();
+                        frequency_value=ConstantValues.Frequency_Daily;
+                        txt_frequency.setText("Everyday");
                     }else if(frequency.equals(ConstantValues.Frequency_OneTime)){
                         action_onetime();
+
                     }else if(frequency.equals(ConstantValues.Frequency_Monthly)){
                         action_montly();
                     }else if(frequency.equals(ConstantValues.Frequency_Weekly)){
@@ -490,7 +474,13 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
             case R.id.txt_status:
                 show_dialogbox_status_type();
                 break;
+            case R.id.txt_start_time:
+                starttime_dialog();
+                break;
 
+            case R.id.txt_end_time:
+                endtime_dialog();
+                break;
             case R.id.button1:
                 Update_Taask();
                 break;
@@ -526,8 +516,83 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
             String currentdate = df.format(c);
 
             dbhelper.update_task_id_db(taskdetail.getId(),goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated);
+
+
             finish();
         }
 
+    }
+    public void starttime_dialog(){
+        final Calendar c = Calendar.getInstance();
+        int   mHour = c.get(Calendar.HOUR_OF_DAY);
+        int  mMinute = c.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+
+                        int    starthour = hourOfDay;
+                        int   startminute=minute;
+                        String minutevalue ="";
+                        if(startminute==0)
+                            minutevalue="00";
+                        else
+                            minutevalue=String.valueOf(startminute);
+
+                        String AM_PM ;
+                        if(hourOfDay < 12) {
+                            AM_PM = "AM";
+                        } else {
+                            AM_PM = "PM";
+                            hourOfDay=hourOfDay-12;
+                        }
+                        if(hourOfDay==0)
+                            hourOfDay=12;
+
+                        String starttime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+
+                        txt_start_time.setText(starttime);
+                    }
+                }, mHour, mMinute, false);
+        timePickerDialog.show();
+    }
+    public void endtime_dialog(){
+        final Calendar c = Calendar.getInstance();
+        int   mHour = c.get(Calendar.HOUR_OF_DAY);
+        int  mMinute = c.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+
+                        int    starthour = hourOfDay;
+                        int   startminute=minute;
+                        String minutevalue ="";
+                        if(startminute==0)
+                            minutevalue="00";
+                        else
+                            minutevalue=String.valueOf(startminute);
+
+                        String AM_PM ;
+                        if(hourOfDay < 12) {
+                            AM_PM = "AM";
+                        } else {
+                            AM_PM = "PM";
+                            hourOfDay=hourOfDay-12;
+                        }
+                        if(hourOfDay==0)
+                            hourOfDay=12;
+
+                        String endtime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+
+
+                        txt_end_time.setText(endtime);
+                    }
+                }, mHour, mMinute, false);
+        timePickerDialog.show();
     }
 }

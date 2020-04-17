@@ -33,7 +33,7 @@
             android:gravity="left"
             android:maxLines="1"
             android:layout_marginLeft="5dp"
-            android:textColor="#FF999999"
+            android:textColor="@color/white"
             android:textSize="10sp"
             tools:text="大床房" />
 

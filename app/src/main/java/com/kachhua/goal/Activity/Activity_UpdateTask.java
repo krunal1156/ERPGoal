@@ -27,6 +27,7 @@ import com.kachhua.goal.database.ConstantValues;
 import com.kachhua.goal.database.DataBaseHelper;
 import com.kachhua.goal.model.Model_GoalList;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +45,7 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
     ArrayList<String> status_type_list = new ArrayList<>();
     ArrayList<String> weekday_list=new ArrayList<>();
 
-    String status_type,start_deadline,end_Deadline,frequency,frequency_value,goalid,starttime="",endtime="";
+    String status_type,start_deadline,end_Deadline,frequency,frequency_value,goalid,starttime="",endtime="",currentdate,DayName,title,reason;
     DataBaseHelper dbhelper;
     int max_day,min_day,max_month,min_month,max_year,min_year;
     Model_GoalList.TaskDetail taskdetail;
@@ -66,6 +67,14 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
         max_year=Integer.parseInt(maxdate[2]);
         max_month=Integer.parseInt(maxdate[1]);
         max_day=Integer.parseInt(maxdate[0]);
+
+
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateformate = new SimpleDateFormat("EEEE");
+        DayName = dateformate.format(c);
+        currentdate = df.format(c);
 
 
 
@@ -523,21 +532,26 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
 
     void Update_Taask(){
 
-        String title = edt_title.getText().toString();
-        String reason =edt_reason.getText().toString();
+         title = edt_title.getText().toString();
+         reason =edt_reason.getText().toString();
 
         if(TextUtils.isEmpty(title)){
 
             Toast.makeText(getApplicationContext(),"Enter Title",Toast.LENGTH_SHORT).show();
-        }else if(TextUtils.isEmpty(frequency)){
+        }
+        else if(TextUtils.isEmpty(frequency)){
             Toast.makeText(getApplicationContext(),"Select Frequency",Toast.LENGTH_SHORT).show();
-        }else if(TextUtils.isEmpty(status_type)){
+        }
+        else if(TextUtils.isEmpty(status_type)){
             Toast.makeText(getApplicationContext(),"Select Status",Toast.LENGTH_SHORT).show();
-        }else if(TextUtils.isEmpty(start_deadline)){
+        }
+        else if(TextUtils.isEmpty(start_deadline)){
             Toast.makeText(getApplicationContext(),"Select Start Date",Toast.LENGTH_SHORT).show();
-        }else if(TextUtils.isEmpty(end_Deadline)){
+        }
+        else if(TextUtils.isEmpty(end_Deadline)){
             Toast.makeText(getApplicationContext(),"Select Deadline",Toast.LENGTH_SHORT).show();
-        }else{
+        }
+        else{
 
             if(frequency==ConstantValues.Frequency_Weekly){
                 StringBuilder sb = new StringBuilder();
@@ -562,10 +576,91 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
             dbhelper.update_task_id_db(taskdetail.getId(),goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated,starttime,endtime);
 
 
+
+
             finish();
         }
 
     }
+
+    void insertdata_daily_once(String taskid){
+
+        try {
+
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date Date_Current = df.parse(currentdate);
+
+
+
+
+            Date Date_start =df.parse(start_deadline);
+            Date Date_end = df.parse(end_Deadline);
+
+            if (frequency.equals(ConstantValues.Frequency_Daily)) {
+
+
+                if(is_in_betweendate(Date_Current,Date_start,Date_end))
+                    dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
+
+            else if (frequency.equals(ConstantValues.Frequency_Weekly)) {
+                if (is_in_betweendate(Date_Current, Date_start, Date_end)) {
+                    String[] multipledays = frequency_value.split(",");
+
+                    for(int a=0;a<multipledays.length;a++){
+                        if (DayName.equals(multipledays[a]))
+                            dbhelper.insert_dialy_task_id_db(goalid, taskid, title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime);
+                    }
+
+                }
+            }
+            else if (frequency.equals(ConstantValues.Frequency_Monthly)) {
+
+                if(is_in_betweendate(Date_Current,Date_start,Date_end)){
+                    String []currentdate_array=currentdate.split("/");
+                    String date1 =currentdate_array[0];
+
+                    String frequncy_value_array[]=frequency_value.split("/");
+                    String date2 =frequncy_value_array[0];
+                    if (date1.equals(date2))
+                        dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
+
+
+            }
+
+
+
+
+
+            else if (frequency.equals(ConstantValues.Frequency_OneTime)) {
+                if(is_in_betweendate(Date_Current,Date_start,Date_end))
+                    if (currentdate.equals(frequency_value))
+                        dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
+
+
+
+
+
+
+
+            finish();
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
+    }
+    boolean is_in_betweendate(Date CurrntDate,Date Startdate,Date Enddate){
+
+        return Startdate.compareTo(CurrntDate) * CurrntDate.compareTo(Enddate)>=0;
+    }
+
     public void starttime_dialog(){
         final Calendar c = Calendar.getInstance();
         int   mHour = c.get(Calendar.HOUR_OF_DAY);

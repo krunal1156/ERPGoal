@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.Calendar;
 
 public class Activity_Main extends AppCompatActivity implements View.OnClickListener {
@@ -46,22 +47,26 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
     LinearLayout lnr_force_report;
     DataBaseHelper dataBaseHelper;
     SharedPreferences settings1;
+    String DB_PATH,file;
+    String DB_NAME=ConstantValues.DB_Name;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity__main);
         findids();
         actions();
-        changefragment(0);
-
-         settings1 = PreferenceManager.getDefaultSharedPreferences(Activity_Main.this);
+        settings1 = PreferenceManager.getDefaultSharedPreferences(Activity_Main.this);
         int abc = settings1.getInt("db_installed", -1);
         if (abc!=1) {
-
 
             SharedPreferences.Editor editor1 = settings1.edit();
             editor1.putInt("db_installed", 1);
             editor1.commit();
+
+
+
 
 
             Import_Db();
@@ -72,7 +77,10 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
            // Import_Db();
 
             export_Db();
+
         }
+
+
     }
 
     void findids(){
@@ -277,26 +285,17 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
             InputStream myInput = null;
             OutputStream outStream;
 
-            myInput = new FileInputStream(file_input);
-
-
-            String DB_PATH,dumypath;
-            String DB_NAME=ConstantValues.DB_Name;
 
             if (android.os.Build.VERSION.SDK_INT >= 17) {
-               // DB_PATH = getApplicationContext().getApplicationInfo().dataDir + "/databases/";
+                //DB_PATH = getApplicationContext().getApplicationInfo().dataDir + "/databases/";
                 DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
-                dumypath="/data/data/com.kachhua.goal/databases/ERP_GOAL";
-
-
             }
             else {
                 DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
             }
+            file = DB_PATH + DB_NAME;
 
-
-
-            String file = DB_PATH + DB_NAME;
+            myInput = new FileInputStream(file_input);
             outStream = new FileOutputStream(file);
 
             File dbshm = new File(file + "-shm");
@@ -310,10 +309,6 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
 
             byte[] buffer = new byte[1024];
             int length = 0;
-          /*  while ((length = myInput.read(buffer)) >= 0) {
-                outStream.write(buffer, 0, length);
-            }*/
-
             while ((length = myInput.read(buffer)) > 0) {
                 outStream.write(buffer, 0, length);
             }
@@ -332,10 +327,15 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
 
 
 
-        } catch (IOException e) {
+        }catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"IMPORT : "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+
+
+        }finally {
+            changefragment(0);
+
         }
 
     }
@@ -356,15 +356,14 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
             InputStream myInput =null;//= getApplicationContext().getAssets().open(DataBaseHelper.DATABASE_NAME+".db");
 
             // Path to the just created empty db
-            String outFileName = "/data/data/com.kachhua.goal/databases/"+ConstantValues.DB_Name;
+            String inputfile_path = "/data/data/com.kachhua.goal/databases/"+ConstantValues.DB_Name;
 
-            File file = new File(outFileName);
-            myInput = new FileInputStream(file);
+            File input_file = new File(inputfile_path);
+            myInput = new FileInputStream(input_file);
 
             String filename = Environment.getExternalStorageDirectory()+"/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
             OutputStream myOutput = new FileOutputStream(filename);
 
-            // transfer bytes from the inputfile to the outputfile
             byte[] buffer = new byte[1024];
             int length;
             while ((length = myInput.read(buffer)) > 0)
@@ -382,7 +381,11 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         catch (Exception e)
         {
             Log.e("error", e.toString());
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"EXPORT : "+e.getMessage(),Toast.LENGTH_SHORT).show();
+        }finally {
+
+            changefragment(0);
+
         }
     }
 

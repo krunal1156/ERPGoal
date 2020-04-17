@@ -712,11 +712,8 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                     Date Date_end = df.parse(end_Deadline);
 
                     if (frequency.equals(ConstantValues.Frequency_Daily)) {
-
-
                         if(is_in_betweendate(Date_Current,Date_start,Date_end))
                             dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
-
                     else if (frequency.equals(ConstantValues.Frequency_Weekly)) {
                         if (is_in_betweendate(Date_Current, Date_start, Date_end)) {
                             String[] multipledays = frequency_value.split(",");
@@ -729,16 +726,13 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                         }
                     }
                     else if (frequency.equals(ConstantValues.Frequency_Monthly)) {
-
                         if(is_in_betweendate(Date_Current,Date_start,Date_end)){
                             String []currentdate_array=currentdate.split("/");
                             String date1 =currentdate_array[0];
-
                             String frequncy_value_array[]=frequency_value.split("/");
                             String date2 =frequncy_value_array[0];
                             if (date1.equals(date2))
                                 dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
-
 
                         }
 
@@ -771,7 +765,6 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
 
 
     }
-
     boolean is_in_betweendate(Date CurrntDate,Date Startdate,Date Enddate){
 
         return Startdate.compareTo(CurrntDate) * CurrntDate.compareTo(Enddate)>=0;

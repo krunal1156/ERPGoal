@@ -387,9 +387,11 @@ public class Fragment_Dashboard extends Fragment {
             viewHolder.txt_frequency.setText(adapterlist.get(i).getTask_frequecy());;
             viewHolder.txt_deadline.setText(""+adapterlist.get(i).getCreated_date());
             viewHolder.txt_goalname.setText(adapterlist.get(i).getGoalname());
-            viewHolder.txt_time.setText(adapterlist.get(i).getStarttime()+" To "+adapterlist.get(i).getEndtime());
-            if(adapterlist.get(i).getStarttime()==null || adapterlist.get(i).getEndtime()==null)
+            if(adapterlist.get(i).getStarttime()==null|| adapterlist.get(i).getStarttime().equals("")|| adapterlist.get(i).getEndtime()==null||adapterlist.get(i).getEndtime().equals(""))
                 viewHolder.txt_time.setText("");
+            else
+                viewHolder.txt_time.setText(adapterlist.get(i).getStarttime()+" To "+adapterlist.get(i).getEndtime());
+
 
             if(is_finished.equals(ConstantValues.Incomplated)) {
                 viewHolder.txt_status.setText("Running");
@@ -679,9 +681,9 @@ public class Fragment_Dashboard extends Fragment {
 
         } catch (ParseException e) {
             e.printStackTrace();
-            Toast.makeText(getContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"PARSE : "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
         }catch (Exception e){
-            Toast.makeText(getContext(),e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"DAHSORD : "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
         }
 
 

@@ -54,7 +54,7 @@ public class CustomAdapter extends BaseExcelPanelAdapter<RowTitle, ColTitle, Cel
         viewHolder.cellContainer.setTag(cell);
         viewHolder.cellContainer.setOnClickListener(blockListener);
         if (cell.getStatus() == 0) {
-            viewHolder.img_status.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.notavailable));
+            viewHolder.img_status.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.not_avialble));
 
             //viewHolder.bookingName.setText("");
             //viewHolder.channelName.setText("");

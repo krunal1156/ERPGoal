@@ -387,6 +387,9 @@ public class Fragment_Dashboard extends Fragment {
             viewHolder.txt_frequency.setText(adapterlist.get(i).getTask_frequecy());;
             viewHolder.txt_deadline.setText(""+adapterlist.get(i).getCreated_date());
             viewHolder.txt_goalname.setText(adapterlist.get(i).getGoalname());
+            viewHolder.txt_time.setText(adapterlist.get(i).getStarttime()+" To "+adapterlist.get(i).getEndtime());
+            if(adapterlist.get(i).getStarttime()==null || adapterlist.get(i).getEndtime()==null)
+                viewHolder.txt_time.setText("");
 
             if(is_finished.equals(ConstantValues.Incomplated)) {
                 viewHolder.txt_status.setText("Running");
@@ -415,7 +418,15 @@ public class Fragment_Dashboard extends Fragment {
 
             } else if (adapterlist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_Weekly)) {
 
-                viewHolder.txt_frequency.setText("Every "+adapterlist.get(i).getTask_frequecy_value());;
+
+                String[] multipledays = adapterlist.get(i).getTask_frequecy_value().split(",");
+                StringBuilder abc    = new StringBuilder();
+                for(int a=0;a<multipledays.length;a++){
+                    abc.append(multipledays[a].substring(0,3));
+                    abc.append(",");
+
+                }
+                viewHolder.txt_frequency.setText("Every "+abc.toString());;
 
 
             } else if (adapterlist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_Monthly)) {
@@ -521,7 +532,7 @@ public class Fragment_Dashboard extends Fragment {
 
 
 
-        TextView txt_taskname,txt_status,txt_frequency,txt_deadline,txt_goalname;
+        TextView txt_taskname,txt_status,txt_frequency,txt_deadline,txt_goalname,txt_time;
         ImageView img_tick;
         public ViewHolder_TaskList(View convertView) {
             super(convertView);
@@ -533,6 +544,7 @@ public class Fragment_Dashboard extends Fragment {
             txt_frequency=convertView.findViewById(R.id.txt_frequeny);
             txt_deadline=convertView.findViewById(R.id.txt_deadline);
             txt_goalname=convertView.findViewById(R.id.goalname);
+            txt_time =convertView.findViewById(R.id.txt_time);
         }
 
     }
@@ -607,28 +619,35 @@ public class Fragment_Dashboard extends Fragment {
                     String taskid =all_tasklist_from_db.get(i).getId();
                     String taskname = all_tasklist_from_db.get(i).getTaskname();
                     String taskstatus = all_tasklist_from_db.get(i).getTaskstatus();
-                    String starttime = all_tasklist_from_db.get(i).getStart_deadline();
-                    String endtime = all_tasklist_from_db.get(i).getEnd_deadline();
+                    String start_date = all_tasklist_from_db.get(i).getStart_deadline();
+                    String end_date = all_tasklist_from_db.get(i).getEnd_deadline();
                     String reason = all_tasklist_from_db.get(i).getReason();
                     String createddate = currentdate;
                     String isactive = all_tasklist_from_db.get(i).getIs_active();
                     String complate = all_tasklist_from_db.get(i).getIs_complate();
+                    String starttime = all_tasklist_from_db.get(i).getStarttime();
+                    String endtime =all_tasklist_from_db.get(i).getEndtime();
 
-                    Date Date_start =df.parse(starttime);
-                    Date Date_end = df.parse(endtime);
+                    Date Date_start =df.parse(start_date);
+                    Date Date_end = df.parse(end_date);
 
                     if (frequency.equals(ConstantValues.Frequency_Daily)) {
 
 
                         if(is_in_betweendate(Date_Current,Date_start,Date_end))
-                            dbhelper.insert_dialy_task_id_db(goalid,taskid ,taskname, frequency, gfrequeny_value, taskstatus, starttime, endtime, reason, createddate, isactive, complate);
+                            dbhelper.insert_dialy_task_id_db(goalid,taskid ,taskname, frequency, gfrequeny_value, taskstatus, start_date, end_date, reason, createddate, isactive, complate,starttime,endtime);
 
                     } else if (frequency.equals(ConstantValues.Frequency_Weekly)) {
-                        if(is_in_betweendate(Date_Current,Date_start,Date_end))
-                            if (DayName.equals(gfrequeny_value))
-                                 dbhelper.insert_dialy_task_id_db(goalid,taskid ,taskname, frequency, gfrequeny_value, taskstatus, starttime, endtime, reason, createddate, isactive, complate);
+                        if(is_in_betweendate(Date_Current,Date_start,Date_end)) {
+
+                            String[] multipledays = gfrequeny_value.split(",");
+                            for(int a=0;a<multipledays.length;a++){
+                                if (DayName.equals(multipledays[a]))
+                                    dbhelper.insert_dialy_task_id_db(goalid, taskid, taskname, frequency, gfrequeny_value, taskstatus, start_date, end_date, reason, createddate, isactive, complate,starttime,endtime);
+                            }
 
 
+                        }
                     } else if (frequency.equals(ConstantValues.Frequency_Monthly)) {
 
                         if(is_in_betweendate(Date_Current,Date_start,Date_end)){
@@ -638,7 +657,7 @@ public class Fragment_Dashboard extends Fragment {
                             String frequncy_value_array[]=gfrequeny_value.split("/");
                             String date2 =frequncy_value_array[0];
                             if (date1.equals(date2))
-                                dbhelper.insert_dialy_task_id_db(goalid,taskid, taskname, frequency, gfrequeny_value, taskstatus, starttime, endtime, reason, createddate, isactive, complate);
+                                dbhelper.insert_dialy_task_id_db(goalid,taskid, taskname, frequency, gfrequeny_value, taskstatus, start_date, end_date, reason, createddate, isactive, complate,starttime,endtime);
 
 
                         }
@@ -647,7 +666,7 @@ public class Fragment_Dashboard extends Fragment {
                     } else if (frequency.equals(ConstantValues.Frequency_OneTime)) {
                         if(is_in_betweendate(Date_Current,Date_start,Date_end))
                              if (currentdate.equals(gfrequeny_value))
-                               dbhelper.insert_dialy_task_id_db(goalid,taskid, taskname, frequency, gfrequeny_value, taskstatus, starttime, endtime, reason, createddate, isactive, complate);
+                               dbhelper.insert_dialy_task_id_db(goalid,taskid, taskname, frequency, gfrequeny_value, taskstatus, start_date, end_date, reason, createddate, isactive, complate,starttime,endtime);
 
                     }
 

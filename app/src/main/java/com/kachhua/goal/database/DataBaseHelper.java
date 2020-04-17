@@ -30,7 +30,7 @@ import java.util.Date;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = ConstantValues.DB_Name;
-    private static final int DATABASE_VERSION =9 ;
+    private static final int DATABASE_VERSION =10;
 
 
     Context context;
@@ -103,6 +103,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.delete(ConstantValues.GoalList_Table, "ID = ?", new String[]{goal_id});
         db.close();
     }
+
     public void delete_task(String task_id){
         SQLiteDatabase db = this.getReadableDatabase();
         db.delete(ConstantValues.Tasklist_Table, "ID = ?", new String[]{task_id});
@@ -162,9 +163,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return modelList;
     }
+    public int get_intop3() {
+        String countQuery = "SELECT  * FROM " + ConstantValues.GoalList_Table+" WHERE "+ConstantValues.InTop3+" = 'True'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+    public int get_intop10() {
+        String countQuery = "SELECT  * FROM " + ConstantValues.GoalList_Table+" WHERE "+ConstantValues.InTop10+" = 'True'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
 
-
-    public void insert_task_id_db(String goalid, String taskname, String task_frequency, String frequency_value,String task_status, String start_deadline, String end_deadline, String reason,String createddte,String active,String complate) {
+    public void insert_task_id_db(String goalid, String taskname, String task_frequency, String frequency_value,String task_status, String start_deadline, String end_deadline, String reason,String createddte,String active,String complate,String starttime,String endtime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ConstantValues.GoalId, goalid);
@@ -176,12 +192,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(ConstantValues.Task_endDeadline,end_deadline);
         values.put(ConstantValues.Reason,reason);
         values.put(ConstantValues.Task_Created_Date,createddte);
+        values.put(ConstantValues.TaskStartTime,starttime);
+        values.put(ConstantValues.TaskEndTime,endtime);
         values.put(ConstantValues.TaskComplate,complate);
         values.put(ConstantValues.Task_Active_InActive,active);
         db.insert(ConstantValues.Tasklist_Table, null, values);
         db.close();
     }
-    public void update_task_id_db(String id,String goalid, String taskname, String task_frequency,String frequency_value ,String task_status, String start_deadline, String end_deadline, String reason,String createddte,String active,String complate) {
+    public void update_task_id_db(String id,String goalid, String taskname, String task_frequency,String frequency_value ,String task_status, String start_deadline, String end_deadline, String reason,String createddte,String active,String complate,String starttime,String endtime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ConstantValues.GoalId, goalid);
@@ -192,9 +210,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(ConstantValues.Task_startDeadline, start_deadline);
         values.put(ConstantValues.Task_endDeadline,end_deadline);
         values.put(ConstantValues.Reason,reason);
-        values.put(ConstantValues.Task_Created_Date,createddte);
+        //values.put(ConstantValues.Task_Created_Date,createddte);
         values.put(ConstantValues.TaskComplate,complate);
         values.put(ConstantValues.Task_Active_InActive,active);
+        values.put(ConstantValues.TaskStartTime,starttime);
+        values.put(ConstantValues.TaskEndTime,endtime);
         db.update(ConstantValues.Tasklist_Table, values,  " ID = ?", new String[]{id});
         db.close();
 
@@ -203,6 +223,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             SQLiteDatabase db1 = this.getWritableDatabase();
             ContentValues values1 = new ContentValues();
             values1.put(ConstantValues.TaskStatus, ConstantValues.Status_InActive);
+            values1.put(ConstantValues.Task_Frequency,task_frequency);
+            values.put(ConstantValues.Task_Frequency_value, frequency_value);
             db1.update(ConstantValues.Daily_Tasklist_Table, values1,  ConstantValues.TaskId+" = ?", new String[]{id});
             db1.close();
 
@@ -210,6 +232,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             SQLiteDatabase db1 = this.getWritableDatabase();
             ContentValues values1 = new ContentValues();
             values1.put(ConstantValues.TaskStatus, ConstantValues.Status_Active);
+            values1.put(ConstantValues.Task_Frequency,task_frequency);
+            values.put(ConstantValues.Task_Frequency_value, frequency_value);
             db1.update(ConstantValues.Daily_Tasklist_Table, values1,  ConstantValues.TaskId+" = ?", new String[]{id});
             db1.close();
         }
@@ -243,6 +267,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     model.setCreated_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date)));
                     model.setIs_active(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Active_InActive)));
                     model.setIs_complate(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskComplate)));
+                    model.setStarttime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStartTime)));
+                    model.setEndtime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskEndTime)));
 
 
                    // String goalid =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId));
@@ -321,6 +347,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     model.setCreated_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date)));
                     model.setIs_active(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Active_InActive)));
                     model.setIs_complate(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskComplate)));
+                    model.setStarttime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStartTime)));
+                    model.setEndtime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskEndTime)));
+
 
 
                     String goalid =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId));
@@ -427,7 +456,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-    public void insert_dialy_task_id_db(String goalid, String taskid,String taskname, String task_frequency, String frequency_value,String task_status, String start_deadline, String end_deadline, String reason,String created_date,String active,String complate) {
+    public void insert_dialy_task_id_db(String goalid, String taskid,String taskname, String task_frequency, String frequency_value,String task_status, String start_deadline, String end_deadline, String reason,String created_date,String active,String complate,String starttime,String endtime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ConstantValues.GoalId, goalid);
@@ -442,6 +471,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(ConstantValues.Task_Created_Date,created_date);
         values.put(ConstantValues.Task_Active_InActive,active);
         values.put(ConstantValues.TaskComplate,complate);
+        values.put(ConstantValues.TaskStartTime,starttime);
+        values.put(ConstantValues.TaskEndTime,endtime);
         db.insert(ConstantValues.Daily_Tasklist_Table, null, values);
         db.close();
     }
@@ -463,7 +494,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void update_reason_daily_task_id_db(String taskid,String reason) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(ConstantValues.TaskComplate,ConstantValues.Complated);
+        values.put(ConstantValues.TaskComplate,ConstantValues.Status_Reported);
         values.put(ConstantValues.Reason,reason);
 
         db.update(ConstantValues.Daily_Tasklist_Table, values,  " ID = ?", new String[]{taskid});
@@ -483,7 +514,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
         //String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated + "AND " + ConstantValues.TaskStatus + "= '" + ConstantValues.Status_Active  +"'"; ;
-        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table + " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated +"'"  +" AND " +ConstantValues.TaskStatus+ " = '" + ConstantValues.Status_Active + "'" ;
+        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table + " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated +"'"  +" AND " +ConstantValues.TaskStatus+ " = '" + ConstantValues.Status_Active +"'"+" AND "+ConstantValues.Task_Created_Date+" = '"+currentdate+"' "+"ORDER BY "+ConstantValues.GoalId+ "" ;
 
         SQLiteDatabase db_one = this.getWritableDatabase();
         Cursor cursor_one = db_one.rawQuery(query_one, null);
@@ -509,6 +540,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     model.setCreated_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date)));
                     model.setIs_active(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Active_InActive)));
                     model.setIs_complate(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskComplate)));
+
+                    model.setStarttime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStartTime)));
+                    model.setEndtime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskEndTime)));
 
 
                     String goalid =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId));
@@ -544,13 +578,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-                    String currrent_date_from_db =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date));
-
+                  /*  String currrent_date_from_db =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date));
                     if(currrent_date_from_db.equals(currentdate))
                         modelList.add(model);
+                    else
+                        modelList.size();
+*/
 
-
-                  //  modelList.add(model);
+                    modelList.add(model);
 
 
                 } catch (Exception e) {
@@ -565,9 +600,97 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return modelList;
     }
+    public ArrayList<Model_GoalList.TaskDetail> get_all_daily_tasklist_by_taskid(String taskid) {
+
+
+        ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
+        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table + " WHERE " + ConstantValues.TaskId + "= '" + taskid +"'"+" ORDER BY "+ConstantValues.Task_Created_Date;
+
+        SQLiteDatabase db_one = this.getWritableDatabase();
+        Cursor cursor_one = db_one.rawQuery(query_one, null);
+
+        String show_goalname="";
+        if (cursor_one.moveToFirst()) {
+            do {
+                ///////alwasy start from 0 culumn index 0 means first column////////////
+
+
+                try {
+                    Model_GoalList.TaskDetail model = new Model_GoalList.TaskDetail();
+                    model.setId(cursor_one.getString(cursor_one.getColumnIndex("ID")));
+                    model.setGoalid(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId)));
+                    model.setTaskid(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskId)));
+                    model.setTaskname(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskName)));
+                    model.setTask_frequecy(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Frequency)));
+                    model.setTaskstatus(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStatus)));
+                    model.setStart_deadline(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_startDeadline)));
+                    model.setEnd_deadline(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_endDeadline)));
+                    model.setReason(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Reason)));
+                    model.setTask_frequecy_value(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Frequency_value)));
+                    model.setCreated_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date)));
+                    model.setIs_active(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Active_InActive)));
+                    model.setIs_complate(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskComplate)));
+                    model.setStarttime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStartTime)));
+                    model.setEndtime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskEndTime)));
+                    model.setFinished_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Finished_Date)));
+
+
+                    String goalid =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId));
+                    String query = "select "+ConstantValues.GoalName+" from " + ConstantValues.GoalList_Table+ " WHERE "  + "ID = '" +goalid + "'"; ;
+                    SQLiteDatabase db = this.getWritableDatabase();
+                    Cursor cursor = db.rawQuery(query, null);
+
+                    if (cursor.moveToFirst()) {
+                        do {
+
+                            try {
+
+                                String name =cursor.getString(cursor.getColumnIndex(ConstantValues.GoalName));
+                                if(show_goalname.equals(name)){
+                                    model.setShow("1");
+                                }else{
+                                    model.setShow("0");
+                                }
+
+                                show_goalname =cursor.getString(cursor.getColumnIndex(ConstantValues.GoalName));
+                                model.setGoalname(show_goalname);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        } while (cursor.moveToNext());
+                    }
+
+
+
+
+
+
+                      modelList.add(model);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context,e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                }
+
+
+
+
+            } while (cursor_one.moveToNext());
+        }
+        return modelList;
+    }
+
     public ArrayList<Model_GoalList.TaskDetail> get_daily_tasklist_finished(String currentdate) {
         ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
-        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Complated + "'"; ;
+      //  String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Complated + "'" ;
+        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table + " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Complated +"'" +" AND "+ConstantValues.Task_Created_Date+" = '"+currentdate+"' "+"ORDER BY "+ConstantValues.GoalId+ "" ;
+
         SQLiteDatabase db_one = this.getWritableDatabase();
         Cursor cursor_one = db_one.rawQuery(query_one, null);
 
@@ -593,6 +716,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     model.setCreated_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date)));
                     model.setIs_active(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Active_InActive)));
                     model.setIs_complate(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskComplate)));
+                    model.setStarttime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStartTime)));
+                    model.setEndtime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskEndTime)));
+
 
 
                     String goalid =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId));
@@ -628,10 +754,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-                    String currrent_date_from_db =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Finished_Date));
-
+                    /*String currrent_date_from_db =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Finished_Date));
                     if(currrent_date_from_db.equals(currentdate))
                         modelList.add(model);
+*/
+                    modelList.add(model);
 
 
                 } catch (Exception e) {
@@ -647,7 +774,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
     public ArrayList<Model_GoalList.TaskDetail> get_daily_tasklist_missed() {
         ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
-        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated + "'"; ;
+        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated + "'"+" ORDER BY "+ConstantValues.GoalId; ;
         SQLiteDatabase db_one = this.getWritableDatabase();
         Cursor cursor_one = db_one.rawQuery(query_one, null);
 
@@ -673,6 +800,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     model.setCreated_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date)));
                     model.setIs_active(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Active_InActive)));
                     model.setIs_complate(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskComplate)));
+                    model.setStarttime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStartTime)));
+                    model.setEndtime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskEndTime)));
+
 
 
                     String goalid =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId));
@@ -736,10 +866,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-                    //if(Date_corrent.after(Date_start) && Date_corrent.before(Date_end))
-                    //  if(is_in_betweendate(Date_corrent,Date_start,Date_end))
-                   // modelList.add(model);
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -751,42 +877,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             } while (cursor_one.moveToNext());
         }
         return modelList;
-    }
-    public ArrayList<Model_GoalList.TaskDetail> get_daily_tasklist_by_taskid(String taskid) {
-
-
-        ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
-        String query_one = "select * from " + ConstantValues.Daily_Tasklist_Table+ " WHERE " + ConstantValues.TaskId + "= '" + taskid + "'"; ;
-        SQLiteDatabase db_one = this.getWritableDatabase();
-        Cursor cursor_one = db_one.rawQuery(query_one, null);
-
-        String show_goalname="";
-        if (cursor_one.moveToFirst()) {
-            do {
-                ///////alwasy start from 0 culumn index 0 means first column////////////
-
-
-                try {
-                    Model_GoalList.TaskDetail model = new Model_GoalList.TaskDetail();
-                    model.setId(cursor_one.getString(cursor_one.getColumnIndex("ID")));
-                       modelList.add(model);
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(context,e.getMessage().toString(),Toast.LENGTH_SHORT).show();
-                }
-
-
-
-
-            } while (cursor_one.moveToNext());
-        }
-        return modelList;
-    }
-    boolean is_in_betweendate(Date CurrntDate,Date Startdate,Date Enddate){
-
-        return Startdate.compareTo(CurrntDate) * CurrntDate.compareTo(Enddate)>=0;
     }
 
 

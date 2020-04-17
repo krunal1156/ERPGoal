@@ -74,15 +74,20 @@ public class ConstantValues {
     public static final String Task_Created_Date="Task_Created_Date";
     public static final String Task_Finished_Date="Task_Finished_Date";
     public static final String TaskComplate="TaskComplate";
+    public static final String TaskStartTime="TaskStartTime";
+    public static final String TaskEndTime="TaskEndTime";
     public static final String  tasklist_table_query = "create table "+ Tasklist_Table + "( ID INTEGER  PRIMARY KEY AUTOINCREMENT,"
-            +GoalId+" TEXT," +TaskName+" TEXT,"+ Task_Frequency +" TEXT,"+ Task_Frequency_value +" TEXT,"+TaskStatus+" TEXT,"+Task_startDeadline+" TEXT,"+Task_endDeadline+" TEXT,"+Task_Active_InActive+" TEXT,"+Task_Created_Date+" TEXT,"+Task_Finished_Date+" TEXT,"+TaskComplate+" TEXT,"+Reason+" TEXT)";
+            +GoalId+" TEXT," +TaskName+" TEXT,"+ Task_Frequency +" TEXT,"+ Task_Frequency_value +" TEXT,"+TaskStatus+" TEXT,"+Task_startDeadline+" TEXT,"+Task_endDeadline+" TEXT,"
+            +Task_Active_InActive+" TEXT,"+Task_Created_Date+" TEXT,"+Task_Finished_Date+" TEXT,"+TaskStartTime+" TEXT,"+TaskEndTime+" TEXT,"+TaskComplate+" TEXT,"+Reason+" TEXT)";
 
 
 
     public static final String Daily_Tasklist_Table="Daily_Tasklist_Table";
     public static final String TaskId="Task_Id";
     public static final String  Daily_tasklist_table_query = "create table "+ Daily_Tasklist_Table + "( ID INTEGER  PRIMARY KEY AUTOINCREMENT,"
-            +GoalId+" TEXT,"+TaskId+" TEXT," +TaskName+" TEXT,"+ Task_Frequency +" TEXT,"+ Task_Frequency_value +" TEXT,"+TaskStatus+" TEXT,"+Task_startDeadline+" TEXT,"+Task_endDeadline+" TEXT,"+Task_Active_InActive+" TEXT,"+Task_Created_Date+" TEXT,"+Task_Finished_Date+" TEXT,"+TaskComplate+" TEXT,"+Reason+" TEXT)";
+            +GoalId+" TEXT,"+TaskId+" TEXT," +TaskName+" TEXT,"+ Task_Frequency +" TEXT,"+ Task_Frequency_value +" TEXT,"+TaskStatus+" TEXT,"
+            +Task_startDeadline+" TEXT,"+Task_endDeadline+" TEXT," +Task_Active_InActive+" TEXT,"+Task_Created_Date+" TEXT,"+Task_Finished_Date+" TEXT,"
+            +TaskStartTime+" TEXT,"+TaskEndTime+" TEXT,"+TaskComplate+" TEXT,"+Reason+" TEXT)";
 
 
 

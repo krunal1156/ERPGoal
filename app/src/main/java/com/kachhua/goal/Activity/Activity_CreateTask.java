@@ -52,8 +52,8 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
     DataBaseHelper dbhelper;
     int max_day,min_day,max_month,min_month,max_year,min_year;
     ArrayList<Model_GoalList.TaskDetail> daily_tasklist_from_db = new ArrayList<>();
-    String DayName,currentdate;
-
+    String DayName,currentdate,starttime="",endtime="";
+    ArrayList<String> selected_days = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -340,11 +340,17 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
             TextView txt_leave_type = view.findViewById(R.id.txt_leave_type);
             txt_leave_type.setText(weekday_list.get(i));
 
-            if(frequency_value!=null)
-                if(frequency_value.equals(weekday_list.get(i)))
-                    txt_leave_type.setTextColor(getResources().getColor(R.color.dark_ground));
-                else
-                    txt_leave_type.setTextColor(getResources().getColor(R.color.dashboard_threbutton_color));
+            //if(frequency_value!=null)
+              if(selected_days.size()>0){
+
+                  //for(int a=0;a<selected_days.size();a++){
+                      if(selected_days.contains(weekday_list.get(i)))
+                          txt_leave_type.setTextColor(getResources().getColor(R.color.dark_ground));
+                      else
+                          txt_leave_type.setTextColor(getResources().getColor(R.color.dashboard_threbutton_color));
+
+                //  }
+              }
 
 
             final int finalI = i;
@@ -353,8 +359,14 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                 public void onClick(View v) {
                     frequency_value = weekday_list.get(finalI);
                     txt_frequency.setText(" Every "+frequency_value);
-
+                    selected_days.add(frequency_value);
                     dialogbox_weekly.dismiss();
+
+                    if(selected_days.size()>1){
+
+                        txt_frequency.setText("Multiple Weekdays selected");
+
+                    }
 
 
                 }
@@ -534,15 +546,19 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
         if(TextUtils.isEmpty(title)){
 
             Toast.makeText(getApplicationContext(),"Enter Title",Toast.LENGTH_SHORT).show();
-        }else if(TextUtils.isEmpty(frequency)){
+        }
+        else if(TextUtils.isEmpty(frequency)){
             Toast.makeText(getApplicationContext(),"Select Frequency",Toast.LENGTH_SHORT).show();
         //}else if(TextUtils.isEmpty(status_type)){
         //    Toast.makeText(getApplicationContext(),"Select Status",Toast.LENGTH_SHORT).show();
-        }else if(TextUtils.isEmpty(start_deadline)){
+        }
+        else if(TextUtils.isEmpty(start_deadline)){
             Toast.makeText(getApplicationContext(),"Select Start Date",Toast.LENGTH_SHORT).show();
-        }else if(TextUtils.isEmpty(end_Deadline)){
+        }
+        else if(TextUtils.isEmpty(end_Deadline)){
             Toast.makeText(getApplicationContext(),"Select Deadline",Toast.LENGTH_SHORT).show();
-        }else{
+        }
+        else{
             Date c = Calendar.getInstance().getTime();
             System.out.println("Current time => " + c);
 
@@ -551,9 +567,19 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
           //  title=capitalize(title);
              title = title.substring(0, 1).toUpperCase() + title.substring(1).toLowerCase();
 
-
             status_type =ConstantValues.Status_Active;
-           dbhelper.insert_task_id_db(goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated);
+
+            if(frequency==ConstantValues.Frequency_Weekly){
+                StringBuilder sb = new StringBuilder();
+                if(selected_days.size()>0)
+                for(int a =0;a<selected_days.size();a++){
+                    sb.append(selected_days.get(a));
+                    sb.append(",");
+                }
+                frequency_value =sb.toString();
+            }
+
+           dbhelper.insert_task_id_db(goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated,starttime,endtime);
 
 
          ArrayList<Model_GoalList.TaskDetail>   filtered_rv_tasklist=dbhelper.get_tasklist(goalid);
@@ -623,13 +649,6 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
 
-                        int    starthour = hourOfDay;
-                        int   startminute=minute;
-                        String minutevalue ="";
-                        if(startminute==0)
-                            minutevalue="00";
-                        else
-                            minutevalue=String.valueOf(startminute);
 
                         String AM_PM ;
                         if(hourOfDay < 12) {
@@ -641,7 +660,7 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                         if(hourOfDay==0)
                             hourOfDay=12;
 
-                        String starttime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+                         starttime = formatedhour(hourOfDay)+":"+formatedminute(minute)+" "+ AM_PM;
 
                         txt_start_time.setText(starttime);
                     }
@@ -659,13 +678,6 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
 
-                        int    starthour = hourOfDay;
-                        int   startminute=minute;
-                        String minutevalue ="";
-                        if(startminute==0)
-                            minutevalue="00";
-                        else
-                            minutevalue=String.valueOf(startminute);
 
                         String AM_PM ;
                         if(hourOfDay < 12) {
@@ -677,7 +689,7 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                         if(hourOfDay==0)
                             hourOfDay=12;
 
-                        String endtime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+                         endtime = formatedhour(hourOfDay)+":"+formatedminute(minute)+" "+ AM_PM;
 
 
                         txt_end_time.setText(endtime);
@@ -703,13 +715,19 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
 
 
                         if(is_in_betweendate(Date_Current,Date_start,Date_end))
-                            dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+                            dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
 
                     else if (frequency.equals(ConstantValues.Frequency_Weekly)) {
-                        if(is_in_betweendate(Date_Current,Date_start,Date_end))
-                            if (DayName.equals(frequency_value))
-                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+                        if (is_in_betweendate(Date_Current, Date_start, Date_end)) {
+                            String[] multipledays = frequency_value.split(",");
 
+                            for(int a=0;a<multipledays.length;a++){
+                                if (DayName.equals(multipledays[a]))
+                                    dbhelper.insert_dialy_task_id_db(goalid, taskid, title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime);
+                            }
+
+                        }
+                    }
                     else if (frequency.equals(ConstantValues.Frequency_Monthly)) {
 
                         if(is_in_betweendate(Date_Current,Date_start,Date_end)){
@@ -719,7 +737,7 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                             String frequncy_value_array[]=frequency_value.split("/");
                             String date2 =frequncy_value_array[0];
                             if (date1.equals(date2))
-                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
 
 
                         }
@@ -731,7 +749,7 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
                     else if (frequency.equals(ConstantValues.Frequency_OneTime)) {
                         if(is_in_betweendate(Date_Current,Date_start,Date_end))
                             if (currentdate.equals(frequency_value))
-                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated); }
+                                dbhelper.insert_dialy_task_id_db(goalid,taskid,title, frequency, frequency_value, status_type, start_deadline, end_Deadline, "", currentdate, ConstantValues.Status_Active, ConstantValues.Incomplated,starttime,endtime); }
 
 
 
@@ -758,5 +776,70 @@ public class Activity_CreateTask extends AppCompatActivity implements View.OnCli
 
         return Startdate.compareTo(CurrntDate) * CurrntDate.compareTo(Enddate)>=0;
     }
+    String formatedhour(int hour){
+        String test="";
+        if(hour==0){
+            test="12";
+        }else if(hour==1){
+            test="01";
+        }else if(hour==2){
+            test="22";
+        }else if(hour==3){
+            test="03";
+        }else if(hour==4){
+            test="04";
+        }else if(hour==5){
+            test="05";
+        }else if(hour==6){
+            test="06";
+        }else if(hour==7){
+            test="07";
+        }else if(hour==8){
+            test="08";
+        }else if(hour==9){
+            test="09";
+        }else if(hour==10){
+            test="10";
+        }else if(hour==11){
+            test="11";
+        }else {
+            test=String.valueOf(hour);
+        }
 
+
+        return test;
+    }
+    String formatedminute(int hour){
+        String test="";
+        if(hour==0){
+            test="00";
+        }else if(hour==1){
+            test="01";
+        }else if(hour==2){
+            test="22";
+        }else if(hour==3){
+            test="03";
+        }else if(hour==4){
+            test="04";
+        }else if(hour==5){
+            test="05";
+        }else if(hour==6){
+            test="06";
+        }else if(hour==7){
+            test="07";
+        }else if(hour==8){
+            test="08";
+        }else if(hour==9){
+            test="09";
+        }else if(hour==10){
+            test="10";
+        }else if(hour==11){
+            test="11";
+        }else {
+            test=String.valueOf(hour);
+        }
+
+
+        return test;
+    }
 }

@@ -44,11 +44,11 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
     ArrayList<String> status_type_list = new ArrayList<>();
     ArrayList<String> weekday_list=new ArrayList<>();
 
-    String status_type,start_deadline,end_Deadline,frequency,frequency_value,goalid;
+    String status_type,start_deadline,end_Deadline,frequency,frequency_value,goalid,starttime="",endtime="";
     DataBaseHelper dbhelper;
     int max_day,min_day,max_month,min_month,max_year,min_year;
     Model_GoalList.TaskDetail taskdetail;
-
+    ArrayList<String> selected_days = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,12 +123,32 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
         frequency=taskdetail.getTask_frequecy();
         frequency_value=taskdetail.getTask_frequecy_value();
         status_type=taskdetail.getTaskstatus();
+        starttime =taskdetail.getStarttime();
+        endtime=taskdetail.getEndtime();
 
           edt_title.setText(taskdetail.getTaskname());;
           txt_startdeadline.setText(start_deadline);
           txt_enddeadline.setText(end_Deadline);
           txt_frequency.setText(frequency);
           txt_status.setText(status_type);
+          txt_start_time.setText(starttime);
+          txt_end_time.setText(endtime);
+
+          if(frequency.equals(ConstantValues.Frequency_Weekly)){
+              String[] multipledays = frequency_value.split(",");
+                if(multipledays.length>0){
+                    StringBuilder sb = new StringBuilder();
+                    for (int i=0;i<multipledays.length;i++){
+                        selected_days.add(multipledays[i]);
+                        sb.append(multipledays[i].substring(0,3));
+                        sb.append(",");
+
+                    }
+                    txt_frequency.setText("Every "+sb.toString());
+
+                }
+          }
+
 
     }
 
@@ -304,11 +324,17 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
             TextView txt_leave_type = view.findViewById(R.id.txt_leave_type);
             txt_leave_type.setText(weekday_list.get(i));
 
-            if(frequency_value!=null)
-                if(frequency_value.equals(weekday_list.get(i)))
+            //if(frequency_value!=null)
+            if(selected_days.size()>0){
+
+                //for(int a=0;a<selected_days.size();a++){
+                if(selected_days.contains(weekday_list.get(i)))
                     txt_leave_type.setTextColor(getResources().getColor(R.color.dark_ground));
                 else
                     txt_leave_type.setTextColor(getResources().getColor(R.color.dashboard_threbutton_color));
+
+                //  }
+            }
 
 
             final int finalI = i;
@@ -317,8 +343,14 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                 public void onClick(View v) {
                     frequency_value = weekday_list.get(finalI);
                     txt_frequency.setText(" Every "+frequency_value);
-
+                    selected_days.add(frequency_value);
                     dialogbox_weekly.dismiss();
+
+                    if(selected_days.size()>1){
+
+                        txt_frequency.setText("Multiple Weekdays selected");
+
+                    }
 
 
                 }
@@ -507,6 +539,17 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
             Toast.makeText(getApplicationContext(),"Select Deadline",Toast.LENGTH_SHORT).show();
         }else{
 
+            if(frequency==ConstantValues.Frequency_Weekly){
+                StringBuilder sb = new StringBuilder();
+                if(selected_days.size()>0)
+                    for(int a =0;a<selected_days.size();a++){
+                        sb.append(selected_days.get(a));
+                        sb.append(",");
+                    }
+                frequency_value =sb.toString();
+            }
+
+
             if(frequency_value==null)
                 frequency_value="";
             Date c = Calendar.getInstance().getTime();
@@ -515,7 +558,8 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
             String currentdate = df.format(c);
 
-            dbhelper.update_task_id_db(taskdetail.getId(),goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated);
+
+            dbhelper.update_task_id_db(taskdetail.getId(),goalid,title,frequency,frequency_value,status_type,start_deadline,end_Deadline,"",currentdate,ConstantValues.Status_Active,ConstantValues.Incomplated,starttime,endtime);
 
 
             finish();
@@ -533,14 +577,6 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
 
-                        int    starthour = hourOfDay;
-                        int   startminute=minute;
-                        String minutevalue ="";
-                        if(startminute==0)
-                            minutevalue="00";
-                        else
-                            minutevalue=String.valueOf(startminute);
-
                         String AM_PM ;
                         if(hourOfDay < 12) {
                             AM_PM = "AM";
@@ -551,7 +587,7 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                         if(hourOfDay==0)
                             hourOfDay=12;
 
-                        String starttime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+                         starttime = formatedhour(hourOfDay)+":"+formatedminute(minute)+" "+ AM_PM;
 
                         txt_start_time.setText(starttime);
                     }
@@ -569,13 +605,6 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
 
-                        int    starthour = hourOfDay;
-                        int   startminute=minute;
-                        String minutevalue ="";
-                        if(startminute==0)
-                            minutevalue="00";
-                        else
-                            minutevalue=String.valueOf(startminute);
 
                         String AM_PM ;
                         if(hourOfDay < 12) {
@@ -587,7 +616,7 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                         if(hourOfDay==0)
                             hourOfDay=12;
 
-                        String endtime = String.valueOf(hourOfDay)+":"+minutevalue+" "+ AM_PM;
+                         endtime = formatedhour(hourOfDay)+":"+formatedminute(minute)+" "+ AM_PM;
 
 
                         txt_end_time.setText(endtime);
@@ -595,4 +624,73 @@ public class Activity_UpdateTask extends AppCompatActivity implements View.OnCli
                 }, mHour, mMinute, false);
         timePickerDialog.show();
     }
+
+
+    String formatedhour(int hour){
+        String test="";
+         if(hour==0){
+             test="12";
+         }else if(hour==1){
+             test="01";
+         }else if(hour==2){
+             test="22";
+         }else if(hour==3){
+             test="03";
+         }else if(hour==4){
+             test="04";
+         }else if(hour==5){
+             test="05";
+         }else if(hour==6){
+             test="06";
+         }else if(hour==7){
+             test="07";
+         }else if(hour==8){
+             test="08";
+         }else if(hour==9){
+             test="09";
+         }else if(hour==10){
+             test="10";
+         }else if(hour==11){
+             test="11";
+         }else {
+             test=String.valueOf(hour);
+         }
+
+
+        return test;
+    }
+    String formatedminute(int hour){
+        String test="";
+        if(hour==0){
+            test="00";
+        }else if(hour==1){
+            test="01";
+        }else if(hour==2){
+            test="22";
+        }else if(hour==3){
+            test="03";
+        }else if(hour==4){
+            test="04";
+        }else if(hour==5){
+            test="05";
+        }else if(hour==6){
+            test="06";
+        }else if(hour==7){
+            test="07";
+        }else if(hour==8){
+            test="08";
+        }else if(hour==9){
+            test="09";
+        }else if(hour==10){
+            test="10";
+        }else if(hour==11){
+            test="11";
+        }else {
+            test=String.valueOf(hour);
+        }
+
+
+        return test;
+    }
+
 }

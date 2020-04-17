@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:orientation="vertical"
+    android:layout_width="200dp"
+    android:layout_height="@dimen/room_status_cell_length">
+
+    <LinearLayout
+        android:background="@color/white"
+        android:id="@+id/left_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:id="@+id/txt_select_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            tools:text="select start date" />
+
+        <TextView
+            android:visibility="visible"
+            android:id="@+id/txt_select_enddate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:maxLines="1"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            tools:text="select end date" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@color/bg_line" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_line" />
+</LinearLayout>

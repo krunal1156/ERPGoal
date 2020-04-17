@@ -131,8 +131,8 @@ public class Activity_GoalDetail extends AppCompatActivity  implements TaskList_
 
             viewHolder.txt_taskname.setText(filtered_rv_tasklist.get(i).getTaskname());
             viewHolder.txt_status.setText(filtered_rv_tasklist.get(i).getTaskstatus());
-            viewHolder.txt_deadline.setText("start : "+filtered_rv_tasklist.get(i).getStart_deadline());
-            viewHolder.txt_deadline2.setText("end  : "+filtered_rv_tasklist.get(i).getStart_deadline()+"  ");
+            viewHolder.txt_deadline.setText("Start : "+filtered_rv_tasklist.get(i).getStart_deadline());
+            viewHolder.txt_deadline2.setText("End  : "+filtered_rv_tasklist.get(i).getEnd_deadline()+"");
 
 
            if(filtered_rv_tasklist.get(i).getTaskstatus().equals(ConstantValues.Status_InActive)){
@@ -141,20 +141,30 @@ public class Activity_GoalDetail extends AppCompatActivity  implements TaskList_
                 viewHolder.txt_status.setTextColor(getResources().getColor(R.color.green));
             }
 
-
-
-
             if (filtered_rv_tasklist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_Daily)) {
 
                 viewHolder.txt_frequency.setText("Everyday");;
 
 
-            } else if (filtered_rv_tasklist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_Weekly)) {
+            }
+            else if (filtered_rv_tasklist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_Weekly)) {
 
-                viewHolder.txt_frequency.setText("Every "+filtered_rv_tasklist.get(i).getTask_frequecy_value());;
+
+                    String[] multipledays = filtered_rv_tasklist.get(i).getTask_frequecy_value().split(",");
+                    if(multipledays.length>0){
+                        String  sb = "";
+                        for (int a=0;a<multipledays.length;a++){
+                            sb+=multipledays[a].substring(0,3);
+                            sb+=",";
+
+                        }
+                        viewHolder.txt_frequency.setText("Every "+sb);
+
+                    }
 
 
-            } else if (filtered_rv_tasklist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_Monthly)) {
+            }
+            else if (filtered_rv_tasklist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_Monthly)) {
 
                 String gfrequeny_value = filtered_rv_tasklist.get(i).getTask_frequecy_value();
                 String frequncy_value_array[]=gfrequeny_value.split("/");
@@ -162,7 +172,8 @@ public class Activity_GoalDetail extends AppCompatActivity  implements TaskList_
                 viewHolder.txt_frequency.setText("Every "+date2+" of the Month");;
 
 
-            } else if (filtered_rv_tasklist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_OneTime)) {
+            }
+            else if (filtered_rv_tasklist.get(i).getTask_frequecy().equals(ConstantValues.Frequency_OneTime)) {
 
                 viewHolder.txt_frequency.setText("at "+filtered_rv_tasklist.get(i).getTask_frequecy_value());;
 

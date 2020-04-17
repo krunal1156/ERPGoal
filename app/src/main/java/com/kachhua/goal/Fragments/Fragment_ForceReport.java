@@ -212,7 +212,7 @@ public class Fragment_ForceReport extends Fragment {
             public void onClick(View v) {
 
                 dialogbox_weekly.dismiss();
-                dbhelper.update_daily_task_id_db(currentdate,filtered_rv_tasklist.get(i).getId(),filtered_rv_tasklist.get(i).getTaskid());
+                dbhelper.update_daily_task_id_db(filtered_rv_tasklist.get(i).getCreated_date(),filtered_rv_tasklist.get(i).getId(),filtered_rv_tasklist.get(i).getTaskid());
                 filtered_rv_tasklist.clear();;
                 filtered_rv_tasklist = dbhelper.get_daily_tasklist_missed();
                 if (filtered_rv_tasklist != null && filtered_rv_tasklist.size() > 0) {

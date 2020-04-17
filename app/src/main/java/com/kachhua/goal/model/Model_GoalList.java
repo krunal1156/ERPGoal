@@ -206,6 +206,16 @@ public class Model_GoalList  implements Serializable {
         @SerializedName("is_complate")
         public String is_complate;
 
+        @SerializedName("startime")
+        public String starttime;
+
+        @SerializedName("endtime")
+        public String endtime;
+
+        @SerializedName("finisheddate")
+        public String finished_date;
+
+
         public String getTaskid() {
             return taskid;
         }
@@ -324,6 +334,30 @@ public class Model_GoalList  implements Serializable {
 
         public void setShow(String show) {
             this.show = show;
+        }
+
+        public String getStarttime() {
+            return starttime;
+        }
+
+        public void setStarttime(String starttime) {
+            this.starttime = starttime;
+        }
+
+        public String getEndtime() {
+            return endtime;
+        }
+
+        public void setEndtime(String endtime) {
+            this.endtime = endtime;
+        }
+
+        public String getFinished_date() {
+            return finished_date;
+        }
+
+        public void setFinished_date(String finished_date) {
+            this.finished_date = finished_date;
         }
     }
 }

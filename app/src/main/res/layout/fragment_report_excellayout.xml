@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/excel_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <cn.zhouchaoyuan.excelpanel.ExcelPanel
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_cell_width="@dimen/room_status_cell_length"
+        app:normal_cell_width="@dimen/room_status_cell_length"
+        app:top_cell_height="@dimen/room_status_cell_length" />
+
+    <ProgressBar
+        android:visibility="visible"
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+    <TextView
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:textColor="@color/dark_ground"
+        android:text="No Task Founds!"
+        android:id="@+id/txtlable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+</FrameLayout>

@@ -270,19 +270,39 @@ public class Activity_CreateGoal extends AppCompatActivity  implements View.OnCl
                 break;
 
             case R.id.lnr_intop3:
-                is_top3="True";
-                is_top10="False";
-                btn_top3.setBackground(getResources().getDrawable(R.drawable.four_corner_round_green_10));
-                btn_top10.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+                if(is_top3.equals("True")){
+                    is_top3="False";
+                    is_top10="False";
+                    btn_top3.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+                    btn_top10.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+
+                }else{
+                    is_top3="True";
+                    is_top10="False";
+                    btn_top3.setBackground(getResources().getDrawable(R.drawable.four_corner_round_green_10));
+                    btn_top10.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+
+                }
 
                 break;
 
             case R.id.lnr_intop10:
-                is_top10="True";
-                is_top3="False";
-                btn_top10.setBackground(getResources().getDrawable(R.drawable.four_corner_round_green_10));
-                btn_top3.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+                if(is_top10.equals("True")){
 
+                    is_top10="False";
+                    is_top3="False";
+                    btn_top10.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+                    btn_top3.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+
+
+                }else{
+                    is_top10="True";
+                    is_top3="False";
+                    btn_top10.setBackground(getResources().getDrawable(R.drawable.four_corner_round_green_10));
+                    btn_top3.setBackground(getResources().getDrawable(R.drawable.four_corner_round_white_10));
+
+
+                }
 
                 break;
 
@@ -309,8 +329,33 @@ public class Activity_CreateGoal extends AppCompatActivity  implements View.OnCl
             Toast.makeText(getApplicationContext(),"Please select Task Deadline",Toast.LENGTH_SHORT).show();
 
         }else{
-            dbhelper.insert_goal_id_db(taskname,category_type,status_type,start_deadline,end_deadline,is_top3,is_top10);
-            finish();
+
+            if(is_top3.equals("True")){
+                int value = dbhelper.get_intop3();
+                if(value>=3){
+                    Toast.makeText(getApplicationContext(),"cant add new goal in Top 3. alredy 3 goals in List\n Please remove goal from top3 goal list to add new goal",Toast.LENGTH_SHORT).show();
+                }else{
+                    dbhelper.insert_goal_id_db(taskname,category_type,status_type,start_deadline,end_deadline,is_top3,is_top10);
+                    finish();
+
+                }
+
+            }else if(is_top10.equals("True"))
+            {
+                int value = dbhelper.get_intop10();
+                if(value>=10){
+                    Toast.makeText(getApplicationContext(),"cant add new goal in Top 10. alredy 10 goals in List\n Please remove goal from top10 goal list to add new goal",Toast.LENGTH_SHORT).show();
+                }else{
+                    dbhelper.insert_goal_id_db(taskname,category_type,status_type,start_deadline,end_deadline,is_top3,is_top10);
+                    finish();
+
+                }
+
+            }else{
+                dbhelper.insert_goal_id_db(taskname,category_type,status_type,start_deadline,end_deadline,is_top3,is_top10);
+                finish();
+
+            }
         }
 
     }

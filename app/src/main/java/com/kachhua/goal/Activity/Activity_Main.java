@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.kachhua.goal.Fragments.Fragment_Dashboard;
 import com.kachhua.goal.Fragments.Fragment_ForceReport;
 import com.kachhua.goal.Fragments.Fragment_GoalList;
+import com.kachhua.goal.Fragments.Fragment_Reported_Excelpanel;
 import com.kachhua.goal.Fragments.Fragment_Reported_List;
 import com.kachhua.goal.R;
 import com.kachhua.goal.database.ConstantValues;
@@ -245,7 +246,7 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         }else if(i==14){
             fragment= new Fragment_ForceReport();
         }else if(i==15){
-            fragment= new Fragment_Reported_List();
+            fragment= new Fragment_Reported_Excelpanel();
         }
 
 

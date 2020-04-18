@@ -57,6 +57,7 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity__main);
         findids();
         actions();
+
         settings1 = PreferenceManager.getDefaultSharedPreferences(Activity_Main.this);
         int abc = settings1.getInt("db_installed", -1);
         if (abc!=1) {
@@ -74,15 +75,38 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
 
 
         }else{
-           // Import_Db();
 
+            delete_files();
             export_Db();
 
         }
 
+        changefragment(0);
 
     }
 
+    void delete_files(){
+        String db_file_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+        File Db_file = new File(db_file_path);
+        if(Db_file.exists())
+            Db_file.delete();
+
+
+
+        String db_shm_file_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+        File Db_shm_file = new File(db_shm_file_path);
+        if(Db_shm_file.exists())
+            Db_shm_file.delete();
+
+
+
+        String db_wal_file_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+        File Db_wal_file = new File(db_wal_file_path);
+        if(Db_wal_file.exists())
+            Db_wal_file.delete();
+
+
+    }
     void findids(){
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView_left = (NavigationView) findViewById(R.id.nav_view);
@@ -279,11 +303,11 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
     public void Import_Db() {
 
         try {
-            String inputString = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
-            File file_input=new File(inputString);
+           String db_file_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+            File db_file=new File(db_file_path);
 
-            InputStream myInput = null;
-            OutputStream outStream;
+            InputStream db_inputStream = null;
+            OutputStream db_outputStream =null;
 
 
             if (android.os.Build.VERSION.SDK_INT >= 17) {
@@ -295,46 +319,120 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
             }
             file = DB_PATH + DB_NAME;
 
-            myInput = new FileInputStream(file_input);
-            outStream = new FileOutputStream(file);
+
+            db_inputStream = new FileInputStream(db_file);
+            db_outputStream = new FileOutputStream(file);
+
+
+            byte[] db_buffer = new byte[1024];
+            int db_length = 0;
+            while ((db_length = db_inputStream.read(db_buffer)) > 0) {
+                db_outputStream.write(db_buffer, 0, db_length);
+            }
+
+            db_outputStream.flush();
+            db_inputStream.close();
+            db_outputStream.close();
+
+///////////////////////////////////////////////////////
+
+            String db_shm_file_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name+"-shm";
+            File db_shm_file=new File(db_shm_file_path);
+
+            InputStream db_shm_inputStream = null;
+            OutputStream db_shm_outputStream =null;
+
+
+            if (android.os.Build.VERSION.SDK_INT >= 17) {
+                //DB_PATH = getApplicationContext().getApplicationInfo().dataDir + "/databases/";
+                DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
+            }
+            else {
+                DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
+            }
+            file = DB_PATH + DB_NAME+"-shm";
+
+
+            db_shm_inputStream = new FileInputStream(db_shm_file);
+            db_shm_outputStream = new FileOutputStream(file);
 
             File dbshm = new File(file + "-shm");
-            File dbwal = new File(file + "-wal");
             if (dbshm.exists()) {
                 dbshm.delete();
             }
-            if (dbwal.exists()) {
-                dbwal.delete();
+
+            byte[] db_shm_buffer = new byte[1024];
+            int db_shm_length = 0;
+            while ((db_shm_length = db_shm_inputStream.read(db_shm_buffer)) > 0) {
+                db_shm_outputStream.write(db_shm_buffer, 0, db_shm_length);
             }
 
-            byte[] buffer = new byte[1024];
-            int length = 0;
-            while ((length = myInput.read(buffer)) > 0) {
-                outStream.write(buffer, 0, length);
+            db_shm_outputStream.flush();
+            db_shm_inputStream.close();
+            db_shm_outputStream.close();
+            /////////////////////////////////////////////
+
+            String db_wal_file_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name+"-wal";
+            File db_wal_file=new File(db_wal_file_path);
+
+            InputStream db_wal_inputStream = null;
+            OutputStream db_wal_outputStream =null;
+
+
+            if (android.os.Build.VERSION.SDK_INT >= 17) {
+                //DB_PATH = getApplicationContext().getApplicationInfo().dataDir + "/databases/";
+                DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
+            }
+            else {
+                DB_PATH = "/data/data/" + getApplicationContext().getPackageName() + "/databases/";
+            }
+            file = DB_PATH + DB_NAME+"-wal";
+
+
+            db_wal_inputStream = new FileInputStream(db_wal_file);
+            db_wal_outputStream = new FileOutputStream(file);
+
+             File dbwal = new File(file + "-wal");
+
+             if (dbwal.exists()) {
+                 dbwal.delete();
+             }
+
+            byte[] db_wal_buffer = new byte[1024];
+            int db_wal_length = 0;
+            while ((db_wal_length = db_wal_inputStream.read(db_wal_buffer)) > 0) {
+                db_wal_outputStream.write(db_wal_buffer, 0, db_wal_length);
             }
 
-            outStream.flush();
-            myInput.close();
-            outStream.close();
+            db_wal_outputStream.flush();
+            db_wal_inputStream.close();
+            db_wal_outputStream.close();
 
 
 
-             finish();
+
+
+
+
+
+
+
+
+            finish();
              Intent myint = new Intent(Activity_Main.this,Activity_Main.class);
              startActivity(myint);
             Toast.makeText(getApplicationContext(),"Db Imported",Toast.LENGTH_SHORT).show();
 
+            changefragment(0);
 
 
 
-        }catch (IOException e) {
+        }catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             Toast.makeText(getApplicationContext(),"IMPORT : "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
-
-
-        }finally {
             changefragment(0);
+
 
         }
 
@@ -343,30 +441,15 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
     void export_Db(){
         try {
 
+            String inputfile_path_db = "/data/data/com.kachhua.goal/databases/"+ConstantValues.DB_Name;
+            File input_file_db = new File(inputfile_path_db);
+            InputStream Inputstream_dbfile = new FileInputStream(input_file_db);
 
-
-            String dir_path = Environment.getExternalStorageDirectory() + "/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
-            File sltl_Db_file = new File(dir_path);
-            if(sltl_Db_file.exists())
-                sltl_Db_file.delete();
-
-
-
-            // Open your local db as the input stream
-            InputStream myInput =null;//= getApplicationContext().getAssets().open(DataBaseHelper.DATABASE_NAME+".db");
-
-            // Path to the just created empty db
-            String inputfile_path = "/data/data/com.kachhua.goal/databases/"+ConstantValues.DB_Name;
-
-            File input_file = new File(inputfile_path);
-            myInput = new FileInputStream(input_file);
-
-            String filename = Environment.getExternalStorageDirectory()+"/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
-            OutputStream myOutput = new FileOutputStream(filename);
-
+            String output_file_path = Environment.getExternalStorageDirectory()+"/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name;
+            OutputStream myOutput = new FileOutputStream(output_file_path);
             byte[] buffer = new byte[1024];
             int length;
-            while ((length = myInput.read(buffer)) > 0)
+            while ((length = Inputstream_dbfile.read(buffer)) > 0)
             {
                 myOutput.write(buffer, 0, length);
             }
@@ -374,7 +457,47 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
 
             myOutput.flush();
             myOutput.close();
-            myInput.close();
+            Inputstream_dbfile.close();
+           //////////////////////////////
+
+            String inputfile_path_db_shm = "/data/data/com.kachhua.goal/databases/"+ConstantValues.DB_Name+"-shm";
+            File input_file_db_shm = new File(inputfile_path_db_shm);
+            InputStream Inputstream_dbfile_shm = new FileInputStream(input_file_db_shm);
+
+            String output_file_path_shm = Environment.getExternalStorageDirectory()+"/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name+"-shm";
+            OutputStream myOutput_shm = new FileOutputStream(output_file_path_shm);
+            byte[] buffer_shm = new byte[1024];
+            int length_shm;
+            while ((length_shm = Inputstream_dbfile_shm.read(buffer_shm)) > 0)
+            {
+                myOutput_shm.write(buffer_shm, 0, length_shm);
+            }
+
+
+            myOutput_shm.flush();
+            myOutput_shm.close();
+            Inputstream_dbfile_shm.close();
+
+            /////////////////////////////
+            String inputfile_path_db_wal = "/data/data/com.kachhua.goal/databases/"+ConstantValues.DB_Name+"-wal";
+            File input_file_db_wal = new File(inputfile_path_db_wal);
+            InputStream Inputstream_dbfile_wal = new FileInputStream(input_file_db_wal);
+
+            String output_file_path_wal = Environment.getExternalStorageDirectory()+"/"+ConstantValues.foldername+"/"+ConstantValues.DB_Name+"-wal";
+            OutputStream myOutput_wal = new FileOutputStream(output_file_path_wal);
+            byte[] buffer_wal = new byte[1024];
+            int length_wal;
+            while ((length_wal = Inputstream_dbfile_wal.read(buffer_wal)) > 0)
+            {
+                myOutput_wal.write(buffer_wal, 0, length_wal);
+            }
+
+
+            myOutput_wal.flush();
+            myOutput_wal.close();
+            Inputstream_dbfile_wal.close();
+
+
 
             Toast.makeText(getApplicationContext(),"Db Exported",Toast.LENGTH_SHORT).show();
         }

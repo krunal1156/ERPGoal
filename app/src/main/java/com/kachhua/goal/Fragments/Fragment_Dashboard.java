@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kachhua.goal.Activity.Activity_CreateGoal;
+import com.kachhua.goal.Activity.Activity_Main;
 import com.kachhua.goal.Activity.Activity_UpdateTask;
 import com.kachhua.goal.R;
 import com.kachhua.goal.Utility.PrefUtils;
@@ -582,11 +583,25 @@ public class Fragment_Dashboard extends Fragment {
         if (today != lastTimeStarted) {
 
 
-            insertdata_daily_once();
-
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("last_time_started", today);
             editor.commit();
+
+
+            SharedPreferences settings1 = PreferenceManager.getDefaultSharedPreferences(getContext());
+            int abc = settings1.getInt("insert_daily_record_firstime", -1);
+            if (abc==-1) {
+                SharedPreferences.Editor editor1 = settings1.edit();
+                editor1.putInt("insert_daily_record_firstime", 1);
+                editor1.commit();
+
+            }else{
+
+                insertdata_daily_once();
+
+            }
+
+
 
         }else{
             get_tasklist();

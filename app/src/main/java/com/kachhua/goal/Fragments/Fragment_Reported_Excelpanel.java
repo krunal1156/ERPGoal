@@ -72,7 +72,7 @@ public class Fragment_Reported_Excelpanel extends Fragment implements ExcelPanel
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_report_excellayout, container, false);
         dataBaseHelper = new DataBaseHelper(getContext());
-        alltasklist = dataBaseHelper.get_tasklist();
+        alltasklist = dataBaseHelper.get_tasklist_reportpage();
 
 
         Date c = Calendar.getInstance().getTime();

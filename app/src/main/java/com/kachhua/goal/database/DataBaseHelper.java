@@ -326,6 +326,87 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
     public ArrayList<Model_GoalList.TaskDetail> get_tasklist() {
         ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
+        String query = "select * from " + ConstantValues.Tasklist_Table+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated + "'"; ;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor_one = db.rawQuery(query, null);
+
+        String show_goalname="";
+        if (cursor_one.moveToFirst()) {
+            do {
+                ///////alwasy start from 0 culumn index 0 means first column////////////
+
+                try {
+                    Model_GoalList.TaskDetail model = new Model_GoalList.TaskDetail();
+                    model.setId(cursor_one.getString(cursor_one.getColumnIndex("ID")));
+                    model.setGoalid(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId)));
+                    model.setTaskname(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskName)));
+                    model.setTask_frequecy(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Frequency)));
+                    model.setTaskstatus(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStatus)));
+                    model.setStart_deadline(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_startDeadline)));
+                    model.setEnd_deadline(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_endDeadline)));
+                    model.setReason(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Reason)));
+                    model.setTask_frequecy_value(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Frequency_value)));
+                    model.setCreated_date(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Created_Date)));
+                    model.setIs_active(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.Task_Active_InActive)));
+                    model.setIs_complate(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskComplate)));
+                    model.setStarttime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskStartTime)));
+                    model.setEndtime(cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.TaskEndTime)));
+
+
+
+                    String goalid =cursor_one.getString(cursor_one.getColumnIndex(ConstantValues.GoalId));
+                    String query1 = "select "+ConstantValues.GoalName+" from " + ConstantValues.GoalList_Table+ " WHERE "  + "ID = '" +goalid + "'"; ;
+                    SQLiteDatabase db1 = this.getWritableDatabase();
+                    Cursor cursor = db1.rawQuery(query1, null);
+
+                    if (cursor.moveToFirst()) {
+                        do {
+
+                            try {
+
+                                String name =cursor.getString(cursor.getColumnIndex(ConstantValues.GoalName));
+                                if(show_goalname.equals(name)){
+                                    model.setShow("1");
+                                }else{
+                                    model.setShow("0");
+                                }
+
+                                show_goalname =cursor.getString(cursor.getColumnIndex(ConstantValues.GoalName));
+                                model.setGoalname(show_goalname);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+
+
+                        } while (cursor.moveToNext());
+                    }
+
+
+
+
+                    //if(Date_corrent.after(Date_start) && Date_corrent.before(Date_end))
+                    //  if(is_in_betweendate(Date_corrent,Date_start,Date_end))
+                    modelList.add(model);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+            } while (cursor_one.moveToNext());
+        }
+        return modelList;
+    }
+
+    public ArrayList<Model_GoalList.TaskDetail> get_tasklist_reportpage() {
+        ArrayList<Model_GoalList.TaskDetail> modelList = new ArrayList<Model_GoalList.TaskDetail>();
         String query = "select * from " + ConstantValues.Tasklist_Table;//+ " WHERE " + ConstantValues.TaskComplate + "= '" + ConstantValues.Incomplated + "'"; ;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor_one = db.rawQuery(query, null);

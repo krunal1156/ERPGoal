@@ -42,7 +42,7 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
       DataBaseHelper  dataBaseHelper = new DataBaseHelper(getApplicationContext());
-      dataBaseHelper.get_tasklist();
+      dataBaseHelper.get_intop3();
 
         background = new Thread() {
 
